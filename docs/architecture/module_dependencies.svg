@@ -1,137 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="550">
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="600">
   <!-- Title -->
-  <text x="400" y="20" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="16" fill="#1565C0">RDS Agent 模块依赖关系图</text>
+  <text x="425" y="20" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="16" fill="#1565C0">RDS Agent 模块依赖关系图 (Django + Celery)</text>
 
   <!-- rds_agent (root) -->
   <rect x="330" y="40" width="140" height="50" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
   <rect x="330" y="40" width="140" height="18" fill="#1565C0" rx="8"/>
   <text x="400" y="54" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">rds_agent</text>
   <text x="400" y="75" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">__init__.py</text>
-  <text x="400" y="88" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">main.py</text>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">main.py / cli.py</text>
 
   <!-- utils -->
-  <rect x="650" y="40" width="110" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="650" y="40" width="110" height="18" fill="#607D8B" rx="5"/>
-  <text x="705" y="54" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">utils</text>
-  <text x="705" y="75" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">config.py</text>
-  <text x="705" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">logger.py</text>
+  <rect x="700" y="40" width="110" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="700" y="40" width="110" height="18" fill="#607D8B" rx="5"/>
+  <text x="755" y="54" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">utils</text>
+  <text x="755" y="75" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">config.py</text>
+  <text x="755" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">logger.py</text>
 
-  <!-- api -->
-  <rect x="30" y="120" width="120" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="30" y="120" width="120" height="18" fill="#3F51B5" rx="5"/>
-  <text x="90" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">api</text>
-  <text x="90" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">app.py</text>
-  <text x="90" y="168" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">(FastAPI路由)</text>
-
-  <!-- cli -->
-  <rect x="170" y="120" width="120" height="40" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="170" y="120" width="120" height="18" fill="#795548" rx="5"/>
-  <text x="230" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">cli</text>
-  <text x="230" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">cli.py</text>
-
-  <!-- core -->
-  <rect x="310" y="120" width="130" height="80" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="310" y="120" width="130" height="18" fill="#E91E63" rx="5"/>
-  <text x="375" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">core</text>
-  <text x="375" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">agent.py (LangGraph)</text>
-  <text x="375" y="168" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">state.py</text>
-  <text x="375" y="181" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">nodes.py</text>
-  <text x="375" y="194" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">prompts.py</text>
-
-  <!-- diagnostic -->
-  <rect x="460" y="120" width="130" height="100" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="460" y="120" width="130" height="18" fill="#9C27B0" rx="5"/>
-  <text x="525" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">diagnostic</text>
-  <text x="525" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">agent.py (LangGraph)</text>
-  <text x="525" y="168" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">state.py</text>
-  <text x="525" y="181" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">nodes.py</text>
-  <text x="525" y="194" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">checks.py (13项)</text>
-  <text x="525" y="207" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">report_generator.py</text>
-  <text x="525" y="220" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">parameter_optimizer.py</text>
+  <!-- django_project -->
+  <rect x="30" y="120" width="130" height="60" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="30" y="120" width="130" height="18" fill="#3F51B5" rx="5"/>
+  <text x="95" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">django_project</text>
+  <text x="95" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">settings.py</text>
+  <text x="95" y="168" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">urls.py / celery.py</text>
 
   <!-- scheduler -->
-  <rect x="610" y="120" width="150" height="100" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="610" y="120" width="150" height="18" fill="#00BCD4" rx="5"/>
-  <text x="685" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">scheduler</text>
-  <text x="685" y="155" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">executor.py (APScheduler)</text>
-  <text x="685" y="168" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">state.py</text>
-  <text x="685" y="181" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">alert_engine.py</text>
-  <text x="685" y="194" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">history_store.py</text>
-  <text x="685" y="207" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">notification.py</text>
-  <text x="685" y="220" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">api.py</text>
+  <rect x="180" y="120" width="180" height="120" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="180" y="120" width="180" height="18" fill="#00BCD4" rx="5"/>
+  <text x="270" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">scheduler</text>
+
+  <text x="195" y="155" font-family="Arial" font-weight="bold" font-size="9" fill="#333">models/ (Django ORM)</text>
+  <text x="195" y="168" font-family="Arial" font-size="8" fill="#666">task | execution | alert</text>
+  <text x="195" y="181" font-family="Arial" font-size="8" fill="#666">history | notification</text>
+
+  <text x="195" y="198" font-family="Arial" font-weight="bold" font-size="9" fill="#333">api/ (DRF)</text>
+  <text x="195" y="211" font-family="Arial" font-size="8" fill="#666">views | serializers</text>
+
+  <text x="195" y="228" font-family="Arial" font-weight="bold" font-size="9" fill="#333">tasks/ (Celery)</text>
+  <text x="195" y="241" font-family="Arial" font-size="8" fill="#666">inspection | notification</text>
+
+  <text x="195" y="258" font-family="Arial" font-weight="bold" font-size="9" fill="#333">services/</text>
+  <text x="195" y="271" font-family="Arial" font-size="8" fill="#666">task | alert | history</text>
+
+  <!-- diagnostic -->
+  <rect x="380" y="120" width="130" height="110" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="380" y="120" width="130" height="18" fill="#9C27B0" rx="5"/>
+  <text x="445" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">diagnostic</text>
+  <text x="395" y="155" font-family="Arial" font-size="9" fill="#333">agent.py (LangGraph)</text>
+  <text x="395" y="168" font-family="Arial" font-size="9" fill="#333">state.py</text>
+  <text x="395" y="181" font-family="Arial" font-size="9" fill="#333">nodes.py</text>
+  <text x="395" y="194" font-family="Arial" font-size="9" fill="#333">checks.py (13项)</text>
+  <text x="395" y="207" font-family="Arial" font-size="9" fill="#333">report_generator.py</text>
+  <text x="395" y="220" font-family="Arial" font-size="9" fill="#333">parameter_optimizer.py</text>
+
+  <!-- core -->
+  <rect x="530" y="120" width="130" height="80" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="530" y="120" width="130" height="18" fill="#E91E63" rx="5"/>
+  <text x="595" y="134" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">core</text>
+  <text x="545" y="155" font-family="Arial" font-size="9" fill="#333">agent.py (LangGraph)</text>
+  <text x="545" y="168" font-family="Arial" font-size="9" fill="#333">state.py</text>
+  <text x="545" y="181" font-family="Arial" font-size="9" fill="#333">nodes.py</text>
+  <text x="545" y="194" font-family="Arial" font-size="9" fill="#333">prompts.py</text>
 
   <!-- tools -->
-  <rect x="30" y="260" width="260" height="60" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="30" y="260" width="260" height="18" fill="#4CAF50" rx="5"/>
-  <text x="160" y="274" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">tools (LangChain Tools)</text>
-  <text x="160" y="295" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">instance | performance | sql | connection</text>
-  <text x="160" y="308" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">storage | parameters | knowledge | diagnostic</text>
+  <rect x="30" y="280" width="280" height="60" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="30" y="280" width="280" height="18" fill="#4CAF50" rx="5"/>
+  <text x="170" y="294" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">tools (LangChain Tools)</text>
+  <text x="170" y="315" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">instance | performance | sql | connection</text>
+  <text x="170" y="328" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">storage | parameters | knowledge | diagnostic</text>
 
-  <!-- data -->
-  <rect x="310" y="260" width="180" height="80" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="310" y="260" width="180" height="18" fill="#FF9800" rx="5"/>
-  <text x="400" y="274" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">data</text>
-  <text x="400" y="295" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">models.py (10 Pydantic模型)</text>
-  <text x="400" y="308" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">mysql_client.py</text>
-  <text x="400" y="321" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">instance_platform.py</text>
-  <text x="400" y="334" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">vector_store.py (ChromaDB)</text>
+  <!-- External Dependencies -->
+  <rect x="330" y="280" width="180" height="100" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="330" y="280" width="180" height="18" fill="#FF9800" rx="5"/>
+  <text x="420" y="294" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">External Dependencies</text>
+  <text x="345" y="315" font-family="Arial" font-size="9" fill="#333">MySQL (Django ORM)</text>
+  <text x="345" y="328" font-family="Arial" font-size="9" fill="#333">Redis (Celery Broker)</text>
+  <text x="345" y="341" font-family="Arial" font-size="9" fill="#333">Ollama (LLM)</text>
+  <text x="345" y="354" font-family="Arial" font-size="9" fill="#333">ChromaDB (Vector Store)</text>
+  <text x="345" y="367" font-family="Arial" font-size="9" fill="#333">Platform API</text>
 
-  <!-- memory -->
-  <rect x="510" y="260" width="120" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
-  <rect x="510" y="260" width="120" height="18" fill="#8BC34A" rx="5"/>
-  <text x="570" y="274" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">memory</text>
-  <text x="570" y="295" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">conversation.py</text>
-  <text x="570" y="308" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">entity.py</text>
+  <!-- Celery Beat -->
+  <rect x="530" y="280" width="150" height="60" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="530" y="280" width="150" height="18" fill="#FF5722" rx="5"/>
+  <text x="605" y="294" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">Celery Beat</text>
+  <text x="545" y="315" font-family="Arial" font-size="9" fill="#333">django-celery-beat</text>
+  <text x="545" y="328" font-family="Arial" font-size="9" fill="#333">PeriodicTask Scheduler</text>
 
-  <!-- Dependency Lines - Fixed y1 attributes -->
-  <line x1="90" y1="170" x2="90" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="90" y1="200" x2="375" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="90" y1="200" x2="685" y2="220" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <!-- Notification Channels -->
+  <rect x="700" y="280" width="110" height="60" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="700" y="280" width="110" height="18" fill="#795548" rx="5"/>
+  <text x="755" y="294" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">Notifications</text>
+  <text x="710" y="315" font-family="Arial" font-size="8" fill="#333">DingTalk</text>
+  <text x="710" y="328" font-family="Arial" font-size="8" fill="#333">Email/WeChat/Webhook</text>
 
-  <line x1="230" y1="160" x2="230" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="230" y1="200" x2="375" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <!-- Dependency Lines -->
+  <line x1="95" y1="180" x2="95" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="95" y1="200" x2="270" y2="200" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
 
-  <line x1="400" y1="90" x2="400" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="400" y1="90" x2="230" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="270" y1="240" x2="170" y2="280" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="270" y1="240" x2="420" y2="280" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
 
-  <line x1="375" y1="200" x2="160" y2="260" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="375" y1="200" x2="400" y2="260" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="460" y1="180" x2="705" y2="90" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="400" y1="90" x2="95" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="400" y1="90" x2="270" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="400" y1="90" x2="445" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="400" y1="90" x2="595" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
 
-  <line x1="525" y1="220" x2="160" y2="260" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="525" y1="220" x2="400" y2="340" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="445" y1="230" x2="170" y2="280" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="595" y1="200" x2="170" y2="280" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
 
-  <line x1="685" y1="220" x2="525" y2="220" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-  <line x1="685" y1="220" x2="400" y2="340" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
-
-  <line x1="160" y1="320" x2="400" y2="340" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="605" y1="340" x2="270" y2="240" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
+  <line x1="755" y1="340" x2="270" y2="240" stroke="#666" stroke-width="1" stroke-dasharray="4,2"/>
 
   <!-- Legend -->
-  <rect x="30" y="380" width="730" height="60" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="5"/>
-  <text x="50" y="398" font-family="Arial" font-weight="bold" font-size="11" fill="#333">颜色说明:</text>
+  <rect x="30" y="400" width="780" height="70" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="5"/>
+  <text x="50" y="420" font-family="Arial" font-weight="bold" font-size="11" fill="#333">颜色说明:</text>
 
-  <rect x="50" y="408" width="16" height="12" fill="#E91E63" rx="2"/>
-  <text x="70" y="416" font-family="Arial" font-size="10" fill="#333">core - Agent核心</text>
+  <rect x="50" y="435" width="16" height="12" fill="#E91E63" rx="2"/>
+  <text x="70" y="443" font-family="Arial" font-size="10" fill="#333">core - 问答Agent</text>
 
-  <rect x="180" y="408" width="16" height="12" fill="#4CAF50" rx="2"/>
-  <text x="200" y="416" font-family="Arial" font-size="10" fill="#333">tools - 工具层</text>
+  <rect x="160" y="435" width="16" height="12" fill="#9C27B0" rx="2"/>
+  <text x="180" y="443" font-family="Arial" font-size="10" fill="#333">diagnostic - 诊断Agent</text>
 
-  <rect x="290" y="408" width="16" height="12" fill="#FF9800" rx="2"/>
-  <text x="310" y="416" font-family="Arial" font-size="10" fill="#333">data - 数据访问层</text>
+  <rect x="290" y="435" width="16" height="12" fill="#00BCD4" rx="2"/>
+  <text x="310" y="443" font-family="Arial" font-size="10" fill="#333">scheduler - Django App</text>
 
-  <rect x="420" y="408" width="16" height="12" fill="#9C27B0" rx="2"/>
-  <text x="440" y="416" font-family="Arial" font-size="10" fill="#333">diagnostic - 诊断模块</text>
+  <rect x="420" y="435" width="16" height="12" fill="#3F51B5" rx="2"/>
+  <text x="440" y="443" font-family="Arial" font-size="10" fill="#333">django_project</text>
 
-  <rect x="570" y="408" width="16" height="12" fill="#00BCD4" rx="2"/>
-  <text x="590" y="416" font-family="Arial" font-size="10" fill="#333">scheduler - 调度模块</text>
+  <rect x="550" y="435" width="16" height="12" fill="#4CAF50" rx="2"/>
+  <text x="570" y="443" font-family="Arial" font-size="10" fill="#333">tools - 工具层</text>
 
-  <rect x="50" y="428" width="16" height="12" fill="#3F51B5" rx="2"/>
-  <text x="70" y="436" font-family="Arial" font-size="10" fill="#333">api - Web接口</text>
+  <rect x="650" y="435" width="16" height="12" fill="#FF9800" rx="2"/>
+  <text x="670" y="443" font-family="Arial" font-size="10" fill="#333">External</text>
 
-  <rect x="180" y="428" width="16" height="12" fill="#607D8B" rx="2"/>
-  <text x="200" y="436" font-family="Arial" font-size="10" fill="#333">utils - 工具函数</text>
+  <rect x="730" y="435" width="16" height="12" fill="#FF5722" rx="2"/>
+  <text x="750" y="443" font-family="Arial" font-size="10" fill="#333">Celery</text>
 
   <!-- Stats -->
-  <text x="700" y="450" text-anchor="end" font-family="Arial" font-size="10" fill="#666">总计: 6个模块 | 42个文件</text>
+  <text x="750" y="465" text-anchor="end" font-family="Arial" font-size="10" fill="#666">总计: 8个模块 | 50+文件</text>
+
+  <!-- Data Flow Section -->
+  <rect x="30" y="490" width="780" height="90" fill="#E3F2FD" stroke="#1976D2" stroke-width="1" rx="5"/>
+  <text x="50" y="510" font-family="Arial" font-weight="bold" font-size="12" fill="#1565C0">数据流程:</text>
+
+  <rect x="70" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="110" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">1. API请求</text>
+  <text x="110" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Django ViewSet</text>
+
+  <rect x="170" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="210" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">2. 任务调度</text>
+  <text x="210" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Celery Beat</text>
+
+  <rect x="270" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="310" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">3. 任务执行</text>
+  <text x="310" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Celery Worker</text>
+
+  <rect x="370" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="410" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">4. Agent诊断</text>
+  <text x="410" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">DiagnosticAgent</text>
+
+  <rect x="470" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="510" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">5. 告警检查</text>
+  <text x="510" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">AlertService</text>
+
+  <rect x="570" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="610" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">6. 存储历史</text>
+  <text x="610" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">MySQL + Django</text>
+
+  <rect x="670" y="520" width="80" height="50" fill="#fff" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="710" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1565C0">7. 发送通知</text>
+  <text x="710" y="550" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Notification</text>
+
+  <!-- Arrows between flow -->
+  <line x1="150" y1="545" x2="170" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="250" y1="545" x2="270" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="350" y1="545" x2="370" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="545" x2="470" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="550" y1="545" x2="570" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="650" y1="545" x2="670" y2="545" stroke="#1976D2" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1976D2"/>
+    </marker>
+  </defs>
 </svg>

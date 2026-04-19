@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <!-- Title -->
+  <text x="400" y="25" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="16" fill="#0D47A1">调度器模块架构图</text>
+
+  <!-- API Layer -->
+  <rect x="30" y="50" width="740" height="70" fill="#E8EAF6" stroke="#3F51B5" stroke-width="2" rx="5"/>
+  <text x="50" y="70" font-family="Arial" font-weight="bold" font-size="12" fill="#3F51B5">FastAPI Router</text>
+
+  <rect x="80" y="85" width="100" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <rect x="80" y="85" width="100" height="14" fill="#3F51B5" rx="3"/>
+  <text x="130" y="95" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#fff">任务管理</text>
+  <text x="130" y="108" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">CRUD + 启停</text>
+
+  <rect x="200" y="85" width="100" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <rect x="200" y="85" width="100" height="14" fill="#3F51B5" rx="3"/>
+  <text x="250" y="95" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#fff">执行触发</text>
+  <text x="250" y="108" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">run_task_now</text>
+
+  <rect x="320" y="85" width="100" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <rect x="320" y="85" width="100" height="14" fill="#f44336" rx="3"/>
+  <text x="370" y="95" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#fff">告警管理</text>
+  <text x="370" y="108" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">规则/确认/恢复</text>
+
+  <rect x="440" y="85" width="100" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <rect x="440" y="85" width="100" height="14" fill="#4CAF50" rx="3"/>
+  <text x="490" y="95" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#fff">历史查询</text>
+  <text x="490" y="108" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">趋势/对比</text>
+
+  <rect x="560" y="85" width="100" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <rect x="560" y="85" width="100" height="14" fill="#FF9800" rx="3"/>
+  <text x="610" y="95" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#fff">通知渠道</text>
+  <text x="610" y="108" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">渠道配置</text>
+
+  <!-- TaskScheduler -->
+  <rect x="30" y="140" width="250" height="160" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
+  <rect x="30" y="140" width="250" height="18" fill="#00BCD4" rx="8"/>
+  <text x="155" y="154" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">TaskScheduler</text>
+
+  <text x="50" y="175" font-family="Arial" font-weight="bold" font-size="10" fill="#333">核心属性:</text>
+  <text x="50" y="190" font-family="Arial" font-size="9" fill="#333">tasks: dict[str, InspectionTask]</text>
+  <text x="50" y="205" font-family="Arial" font-size="9" fill="#333">executions: dict[str, TaskExecution]</text>
+  <text x="50" y="220" font-family="Arial" font-size="9" fill="#333">scheduler: BackgroundScheduler</text>
+
+  <text x="50" y="240" font-family="Arial" font-weight="bold" font-size="10" fill="#333">核心方法:</text>
+  <text x="50" y="255" font-family="Arial" font-size="9" fill="#333">add_task() - 添加任务</text>
+  <text x="50" y="270" font-family="Arial" font-size="9" fill="#333">enable_task() - 启用调度</text>
+  <text x="50" y="285" font-family="Arial" font-size="9" fill="#333">run_task_now() - 立即执行</text>
+
+  <rect x="200" y="165" width="80" height="40" fill="#E0F7FA" stroke="#00BCD4" stroke-width="1" rx="3"/>
+  <text x="240" y="180" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#006064">APScheduler</text>
+  <text x="240" y="192" text-anchor="middle" font-family="Arial" font-size="8" fill="#006064">CronTrigger</text>
+  <text x="240" y="202" text-anchor="middle" font-family="Arial" font-size="8" fill="#006064">IntervalTrigger</text>
+
+  <!-- AlertEngine -->
+  <rect x="300" y="140" width="180" height="160" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
+  <rect x="300" y="140" width="180" height="18" fill="#f44336" rx="8"/>
+  <text x="390" y="154" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">AlertEngine</text>
+
+  <text x="315" y="175" font-family="Arial" font-size="9" fill="#333">rules: dict[str, AlertRule]</text>
+  <text x="315" y="190" font-family="Arial" font-size="9" fill="#333">events: dict[str, AlertEvent]</text>
+  <text x="315" y="205" font-family="Arial" font-size="9" fill="#333">instance_alerts: 抑制状态</text>
+
+  <text x="315" y="225" font-family="Arial" font-weight="bold" font-size="10" fill="#333">告警抑制:</text>
+  <text x="315" y="240" font-family="Arial" font-size="9" fill="#333">suppress_duration: 300s</text>
+  <text x="315" y="255" font-family="Arial" font-size="9" fill="#333">max_alerts_per_hour: 10</text>
+
+  <!-- HistoryStore -->
+  <rect x="500" y="140" width="170" height="160" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
+  <rect x="500" y="140" width="170" height="18" fill="#4CAF50" rx="8"/>
+  <text x="585" y="154" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">HistoryStore</text>
+
+  <text x="515" y="175" font-family="Arial" font-size="9" fill="#333">history: dict</text>
+  <text x="515" y="190" font-family="Arial" font-size="9" fill="#333">instance_history: 索引</text>
+  <text x="515" y="205" font-family="Arial" font-size="9" fill="#333">storage_path: 文件路径</text>
+
+  <text x="515" y="225" font-family="Arial" font-weight="bold" font-size="10" fill="#333">趋势分析:</text>
+  <text x="515" y="240" font-family="Arial" font-size="9" fill="#333">improving (score_change>5)</text>
+  <text x="515" y="255" font-family="Arial" font-size="9" fill="#333">degrading (score_change<-5)</text>
+
+  <!-- NotificationManager -->
+  <rect x="30" y="320" width="250" height="140" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
+  <rect x="30" y="320" width="250" height="18" fill="#FF9800" rx="8"/>
+  <text x="155" y="334" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">NotificationManager</text>
+
+  <text x="50" y="360" font-family="Arial" font-size="9" fill="#333">channels: dict[str, NotificationChannel]</text>
+  <text x="50" y="375" font-family="Arial" font-size="9" fill="#333">senders: 发送器映射</text>
+
+  <rect x="50" y="390" width="60" height="25" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="80" y="403" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">DingTalk</text>
+
+  <rect x="120" y="390" width="55" height="25" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="147" y="403" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Email</text>
+
+  <rect x="185" y="390" width="55" height="25" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="212" y="403" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">WeChat</text>
+
+  <text x="50" y="430" font-family="Arial" font-size="9" fill="#333">WebhookSender</text>
+  <text x="50" y="445" font-family="Arial" font-size="9" fill="#333">send_alert() - 发送告警</text>
+
+  <!-- Default Rules -->
+  <rect x="300" y="320" width="180" height="140" fill="#fff" stroke="#333" stroke-width="2" rx="8"/>
+  <rect x="300" y="320" width="180" height="18" fill="#C62828" rx="8"/>
+  <text x="390" y="334" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">默认告警规则</text>
+
+  <text x="315" y="360" font-family="Arial" font-weight="bold" font-size="9" fill="#333">1. 健康分数过低</text>
+  <text x="315" y="372" font-family="Arial" font-size="8" fill="#333">overall_score &lt; 60 - CRITICAL</text>
+
+  <text x="315" y="388" font-family="Arial" font-weight="bold" font-size="9" fill="#333">2. 健康分数偏低</text>
+  <text x="315" y="400" font-family="Arial" font-size="8" fill="#333">overall_score &lt; 80 - WARNING</text>
+
+  <text x="315" y="416" font-family="Arial" font-weight="bold" font-size="9" fill="#333">3. 严重问题检测</text>
+  <text x="315" y="428" font-family="Arial" font-size="8" fill="#333">critical_count &gt; 0 - CRITICAL</text>
+
+  <text x="315" y="444" font-family="Arial" font-weight="bold" font-size="9" fill="#333">4. 警告数量过多</text>
+  <text x="315" y="456" font-family="Arial" font-size="8" fill="#333">warning_count &gt; 5 - WARNING</text>
+
+  <!-- Data Flow -->
+  <text x="50" y="490" font-family="Arial" font-weight="bold" font-size="12" fill="#1565C0">数据流程:</text>
+
+  <rect x="80" y="510" width="90" height="35" fill="#E0F7FA" stroke="#00BCD4" stroke-width="1" rx="3"/>
+  <text x="125" y="525" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#006064">任务触发</text>
+  <text x="125" y="538" text-anchor="middle" font-family="Arial" font-size="8" fill="#006064">(Cron/Interval)</text>
+
+  <line x1="170" y1="527" x2="220" y2="527" stroke="#1976D2" stroke-width="2"/>
+  <polygon points="220,527 212,522 212,532" fill="#1976D2"/>
+
+  <rect x="220" y="510" width="90" height="35" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="3"/>
+  <text x="265" y="525" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#4A148C">执行诊断</text>
+  <text x="265" y="538" text-anchor="middle" font-family="Arial" font-size="8" fill="#4A148C">(DiagnosticAgent)</text>
+
+  <line x1="310" y1="527" x2="360" y2="527" stroke="#1976D2" stroke-width="2"/>
+  <polygon points="360,527 352,522 352,532" fill="#1976D2"/>
+
+  <rect x="360" y="510" width="90" height="35" fill="#FFEBEE" stroke="#f44336" stroke-width="1" rx="3"/>
+  <text x="405" y="525" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#B71C1C">检查告警</text>
+  <text x="405" y="538" text-anchor="middle" font-family="Arial" font-size="8" fill="#B71C1C">(AlertEngine)</text>
+
+  <line x1="450" y1="527" x2="500" y2="527" stroke="#1976D2" stroke-width="2"/>
+  <polygon points="500,527 492,522 492,532" fill="#1976D2"/>
+
+  <rect x="500" y="510" width="90" height="35" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1" rx="3"/>
+  <text x="545" y="525" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#1B5E20">存储历史</text>
+  <text x="545" y="538" text-anchor="middle" font-family="Arial" font-size="8" fill="#1B5E20">(HistoryStore)</text>
+
+  <line x1="590" y1="527" x2="640" y2="527" stroke="#1976D2" stroke-width="2"/>
+  <polygon points="640,527 632,522 632,532" fill="#1976D2"/>
+
+  <rect x="640" y="510" width="90" height="35" fill="#FFF3E0" stroke="#FF9800" stroke-width="1" rx="3"/>
+  <text x="685" y="525" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">发送通知</text>
+  <text x="685" y="538" text-anchor="middle" font-family="Arial" font-size="8" fill="#E65100">(Notification)</text>
+</svg>

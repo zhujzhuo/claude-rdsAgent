@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="550" height="700">
+  <!-- Title -->
+  <text x="275" y="18" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="14" fill="#0D47A1">RDS Agent 项目目录结构</text>
+
+  <!-- Root -->
+  <rect x="200" y="35" width="150" height="22" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="3"/>
+  <text x="275" y="50" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#E65100">rds-agent/</text>
+
+  <!-- Level 1 lines - Fixed y1 attributes -->
+  <line x1="275" y1="57" x2="275" y2="70" stroke="#9E9E9E" stroke-width="1"/>
+  <line x1="60" y1="70" x2="490" y2="70" stroke="#9E9E9E" stroke-width="1"/>
+
+  <!-- src/ -->
+  <rect x="35" y="70" width="60" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="65" y="82" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">src/</text>
+
+  <!-- tests/ -->
+  <rect x="440" y="70" width="60" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="470" y="82" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">tests/</text>
+
+  <!-- docs/ -->
+  <rect x="200" y="70" width="60" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="230" y="82" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">docs/</text>
+
+  <!-- knowledge/ -->
+  <rect x="280" y="70" width="70" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="315" y="82" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">knowledge/</text>
+
+  <!-- Root files -->
+  <rect x="140" y="70" width="50" height="18" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="2"/>
+  <text x="165" y="82" text-anchor="middle" font-family="Arial" font-size="8" fill="#1565C0">pyproject.toml</text>
+
+  <rect x="130" y="93" width="45" height="18" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="2"/>
+  <text x="152" y="105" text-anchor="middle" font-family="Arial" font-size="8" fill="#1565C0">README.md</text>
+
+  <!-- src/rds_agent/ -->
+  <rect x="20" y="100" width="130" height="22" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="3"/>
+  <text x="85" y="115" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="9" fill="#E65100">rds_agent/</text>
+
+  <line x1="85" y1="122" x2="85" y2="135" stroke="#9E9E9E" stroke-width="1"/>
+  <line x1="20" y1="135" x2="150" y2="135" stroke="#9E9E9E" stroke-width="1"/>
+
+  <!-- root py files -->
+  <rect x="35" y="135" width="45" height="16" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="57" y="145" text-anchor="middle" font-family="Arial" font-size="7" fill="#1565C0">__init__.py</text>
+
+  <rect x="85" y="135" width="40" height="16" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="105" y="145" text-anchor="middle" font-family="Arial" font-size="7" fill="#1565C0">main.py</text>
+
+  <rect x="130" y="135" width="35" height="16" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="147" y="145" text-anchor="middle" font-family="Arial" font-size="7" fill="#1565C0">cli.py</text>
+
+  <!-- Module folders -->
+  <!-- core/ -->
+  <rect x="10" y="158" width="45" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="32" y="170" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">core/</text>
+  <line x1="32" y1="176" x2="32" y2="188" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="5" y="188" width="40" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="25" y="196" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">agent.py</text>
+  <rect x="5" y="204" width="40" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="25" y="212" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">state.py</text>
+  <rect x="5" y="220" width="40" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="25" y="228" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">nodes.py</text>
+  <rect x="5" y="236" width="40" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="25" y="244" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">prompts.py</text>
+
+  <!-- api/ -->
+  <rect x="50" y="158" width="45" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="72" y="170" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">api/</text>
+  <line x1="72" y1="176" x2="72" y2="188" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="50" y="188" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="72" y="196" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">app.py</text>
+
+  <!-- tools/ -->
+  <rect x="100" y="158" width="45" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="122" y="170" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">tools/</text>
+  <line x1="122" y1="176" x2="122" y2="188" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="100" y="188" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="196" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">instance.py</text>
+  <rect x="100" y="204" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="212" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">performance.py</text>
+  <rect x="100" y="220" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="228" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">sql.py</text>
+  <rect x="100" y="236" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="244" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">connection.py</text>
+  <rect x="100" y="252" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="260" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">storage.py</text>
+  <rect x="100" y="268" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="276" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">parameters.py</text>
+  <rect x="100" y="284" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="122" y="292" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">knowledge.py</text>
+
+  <!-- data/ -->
+  <rect x="150" y="158" width="45" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="172" y="170" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">data/</text>
+  <line x1="172" y1="176" x2="172" y2="188" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="150" y="188" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="196" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">models.py</text>
+  <rect x="150" y="204" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="212" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">mysql_client.py</text>
+  <rect x="150" y="220" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="228" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">instance_platform</text>
+  <rect x="150" y="236" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="244" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">vector_store.py</text>
+
+  <!-- diagnostic/ -->
+  <rect x="10" y="310" width="65" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="42" y="322" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">diagnostic/</text>
+  <line x1="42" y1="328" x2="42" y2="340" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="5" y="340" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="348" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">agent.py</text>
+  <rect x="5" y="356" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="364" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">state.py</text>
+  <rect x="5" y="372" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="380" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">nodes.py</text>
+  <rect x="5" y="388" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="396" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">checks.py</text>
+  <rect x="5" y="404" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="412" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">report_gen.py</text>
+  <rect x="5" y="420" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="27" y="428" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">param_opt.py</text>
+
+  <!-- scheduler/ -->
+  <rect x="80" y="310" width="65" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="112" y="322" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">scheduler/</text>
+  <line x1="112" y1="328" x2="112" y2="340" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="80" y="340" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="348" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">executor.py</text>
+  <rect x="80" y="356" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="364" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">state.py</text>
+  <rect x="80" y="372" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="380" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">alert_engine.py</text>
+  <rect x="80" y="388" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="396" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">history_store.py</text>
+  <rect x="80" y="404" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="412" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">notification.py</text>
+  <rect x="80" y="420" width="65" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="112" y="428" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">api.py</text>
+
+  <!-- utils/ -->
+  <rect x="150" y="310" width="45" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="172" y="322" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">utils/</text>
+  <line x1="172" y1="328" x2="172" y2="340" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="150" y="340" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="348" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">config.py</text>
+  <rect x="150" y="356" width="45" height="14" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="172" y="364" text-anchor="middle" font-family="Arial" font-size="6" fill="#1565C0">logger.py</text>
+
+  <!-- memory/ -->
+  <rect x="5" y="440" width="50" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="30" y="452" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">memory/</text>
+
+  <!-- Tests structure -->
+  <line x1="470" y1="88" x2="470" y2="100" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="440" y="100" width="70" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="475" y="112" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">test_tools/</text>
+
+  <rect x="360" y="120" width="70" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="395" y="132" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">test_agent/</text>
+
+  <rect x="440" y="120" width="70" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="475" y="132" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">test_scheduler/</text>
+
+  <rect x="360" y="140" width="55" height="16" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="387" y="150" text-anchor="middle" font-family="Arial" font-size="7" fill="#1565C0">conftest.py</text>
+
+  <!-- Docs structure -->
+  <line x1="230" y1="88" x2="230" y2="100" stroke="#9E9E9E" stroke-width="1"/>
+
+  <rect x="200" y="100" width="70" height="18" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="2"/>
+  <text x="235" y="112" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#E65100">architecture/</text>
+
+  <!-- Stats -->
+  <rect x="180" y="480" width="180" height="50" fill="#E8EAF6" stroke="#3F51B5" stroke-width="1" rx="5"/>
+  <text x="270" y="498" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#283593">项目统计</text>
+  <text x="270" y="515" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">源文件: 42个 | 测试: 82+</text>
+  <text x="270" y="528" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">模块: 6个 | 覆盖率: 37%</text>
+
+  <!-- Legend -->
+  <rect x="180" y="550" width="180" height="40" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="3"/>
+  <rect x="200" y="565" width="30" height="12" fill="#FFE0B2" stroke="#FF9800" stroke-width="1" rx="1"/>
+  <text x="240" y="573" font-family="Arial" font-size="8" fill="#333">目录</text>
+  <rect x="270" y="565" width="30" height="12" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="1"/>
+  <text x="310" y="573" font-family="Arial" font-size="8" fill="#333">文件</text>
+</svg>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="750">
+  <!-- Title -->
+  <text x="375" y="20" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="16" fill="#0D47A1">诊断Agent流程图 (LangGraph状态机)</text>
+
+  <!-- START -->
+  <rect x="320" y="40" width="110" height="30" fill="#fff" stroke="#333" stroke-width="2" rx="5"/>
+  <rect x="320" y="40" width="110" height="16" fill="#4CAF50" rx="5"/>
+  <text x="375" y="52" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">START</text>
+
+  <!-- initialize_diagnostic -->
+  <rect x="270" y="90" width="210" height="40" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="90" width="210" height="16" fill="#2196F3" rx="5"/>
+  <text x="375" y="102" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">initialize_diagnostic</text>
+  <text x="375" y="120" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">初始化诊断上下文</text>
+
+  <!-- connect_instance -->
+  <rect x="270" y="150" width="210" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="150" width="210" height="16" fill="#2196F3" rx="5"/>
+  <text x="375" y="162" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">connect_instance</text>
+  <text x="375" y="180" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">获取MySQL连接</text>
+  <text x="375" y="192" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">验证连接状态</text>
+
+  <!-- Decision: connect_success -->
+  <polygon points="375,220 445,255 375,290 305,255" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+  <text x="375" y="260" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">连接成功?</text>
+
+  <!-- run_checks -->
+  <rect x="270" y="320" width="210" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="320" width="210" height="16" fill="#9C27B0" rx="5"/>
+  <text x="375" y="332" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">run_checks</text>
+  <text x="375" y="350" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">执行13项诊断检查</text>
+  <text x="375" y="362" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">收集检查结果</text>
+
+  <!-- Check Items Box -->
+  <rect x="500" y="320" width="220" height="200" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="5"/>
+  <text x="610" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#7B1FA2">13项诊断检查</text>
+
+  <text x="520" y="360" font-family="Arial" font-size="9" fill="#333">1. InstanceRunningCheck</text>
+  <text x="520" y="372" font-family="Arial" font-size="9" fill="#333">2. ConnectionCountCheck</text>
+  <text x="520" y="384" font-family="Arial" font-size="9" fill="#333">3. ThreadCacheHitRateCheck</text>
+  <text x="520" y="396" font-family="Arial" font-size="9" fill="#333">4. BufferPoolHitRateCheck</text>
+  <text x="520" y="408" font-family="Arial" font-size="9" fill="#333">5. SlowQueryCountCheck</text>
+  <text x="520" y="420" font-family="Arial" font-size="9" fill="#333">6. InnoDBIOCheck</text>
+  <text x="520" y="432" font-family="Arial" font-size="9" fill="#333">7. TableLockWaitCheck</text>
+  <text x="520" y="444" font-family="Arial" font-size="9" fill="#333">8. StorageUsageCheck</text>
+  <text x="520" y="456" font-family="Arial" font-size="9" fill="#333">9. TableFragmentationCheck</text>
+  <text x="520" y="468" font-family="Arial" font-size="9" fill="#333">10. IndexUsageCheck</text>
+
+  <text x="650" y="360" font-family="Arial" font-size="9" fill="#333">11. BinaryLogCheck</text>
+  <text x="650" y="372" font-family="Arial" font-size="9" fill="#333">12. ReplicationCheck</text>
+  <text x="650" y="384" font-family="Arial" font-size="9" fill="#333">13. ParameterCheck</text>
+
+  <!-- analyze_results -->
+  <rect x="270" y="400" width="210" height="50" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="400" width="210" height="16" fill="#2196F3" rx="5"/>
+  <text x="375" y="412" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">analyze_results</text>
+  <text x="375" y="430" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">计算健康分数</text>
+  <text x="375" y="442" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">分类汇总问题</text>
+
+  <!-- generate_suggestions -->
+  <rect x="270" y="470" width="210" height="40" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="470" width="210" height="16" fill="#2196F3" rx="5"/>
+  <text x="375" y="482" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">generate_suggestions</text>
+  <text x="375" y="500" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">生成优化建议</text>
+
+  <!-- Decision: need_optimize -->
+  <polygon points="375,530 445,565 375,600 305,565" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+  <text x="375" y="570" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">需要参数优化?</text>
+
+  <!-- optimize_parameters -->
+  <rect x="80" y="545" width="180" height="40" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="80" y="545" width="180" height="16" fill="#2196F3" rx="5"/>
+  <text x="170" y="557" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">optimize_parameters</text>
+  <text x="170" y="575" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">参数优化分析</text>
+
+  <!-- generate_report -->
+  <rect x="270" y="630" width="210" height="40" fill="#fff" stroke="#333" stroke-width="1" rx="5"/>
+  <rect x="270" y="630" width="210" height="16" fill="#2196F3" rx="5"/>
+  <text x="375" y="642" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">generate_report</text>
+  <text x="375" y="660" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">生成诊断报告</text>
+
+  <!-- END -->
+  <rect x="320" y="690" width="110" height="30" fill="#fff" stroke="#333" stroke-width="2" rx="5"/>
+  <rect x="320" y="690" width="110" height="16" fill="#f44336" rx="5"/>
+  <text x="375" y="702" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">END</text>
+
+  <!-- Arrows -->
+  <line x1="375" y1="70" x2="375" y2="90" stroke="#333" stroke-width="2"/>
+  <polygon points="375,90 370,82 380,82" fill="#333"/>
+
+  <line x1="375" y1="130" x2="375" y2="150" stroke="#333" stroke-width="2"/>
+  <polygon points="375,150 370,142 380,142" fill="#333"/>
+
+  <line x1="375" y1="200" x2="375" y2="220" stroke="#333" stroke-width="2"/>
+  <polygon points="375,220 370,212 380,212" fill="#333"/>
+
+  <line x1="375" y1="290" x2="375" y2="320" stroke="#333" stroke-width="2"/>
+  <polygon points="375,320 370,312 380,312" fill="#333"/>
+  <text x="385" y="305" font-family="Arial" font-size="9" fill="#666">是</text>
+
+  <line x1="305" y1="255" x2="80" y2="255" stroke="#333" stroke-width="1"/>
+  <line x1="80" y1="255" x2="80" y2="650" stroke="#333" stroke-width="1"/>
+  <line x1="80" y1="650" x2="270" y2="650" stroke="#333" stroke-width="1"/>
+  <polygon points="270,650 262,645 262,655" fill="#333"/>
+  <text x="150" y="245" font-family="Arial" font-size="9" fill="#666">否 (连接失败)</text>
+
+  <line x1="480" y1="350" x2="500" y2="350" stroke="#333" stroke-width="1"/>
+
+  <line x1="375" y1="370" x2="375" y2="400" stroke="#333" stroke-width="2"/>
+  <polygon points="375,400 370,392 380,392" fill="#333"/>
+
+  <line x1="375" y1="450" x2="375" y2="470" stroke="#333" stroke-width="2"/>
+  <polygon points="375,470 370,462 380,462" fill="#333"/>
+
+  <line x1="375" y1="510" x2="375" y2="530" stroke="#333" stroke-width="2"/>
+  <polygon points="375,530 370,522 380,522" fill="#333"/>
+
+  <line x1="305" y1="565" x2="260" y2="565" stroke="#333" stroke-width="1"/>
+  <polygon points="260,565 268,560 268,570" fill="#333"/>
+  <text x="280" y="555" font-family="Arial" font-size="9" fill="#666">是</text>
+
+  <line x1="170" y1="585" x2="170" y2="670" stroke="#333" stroke-width="1"/>
+  <line x1="170" y1="670" x2="270" y2="670" stroke="#333" stroke-width="1"/>
+  <polygon points="270,670 262,665 262,675" fill="#333"/>
+
+  <line x1="445" y1="565" x2="550" y2="565" stroke="#333" stroke-width="1"/>
+  <line x1="550" y1="565" x2="550" y2="670" stroke="#333" stroke-width="1"/>
+  <line x1="550" y1="670" x2="480" y2="670" stroke="#333" stroke-width="1"/>
+  <polygon points="480,670 488,665 488,675" fill="#333"/>
+  <text x="500" y="555" font-family="Arial" font-size="9" fill="#666">否</text>
+
+  <line x1="375" y1="670" x2="375" y2="690" stroke="#333" stroke-width="2"/>
+  <polygon points="375,690 370,682 380,682" fill="#333"/>
+
+  <!-- DiagnosticType Labels -->
+  <rect x="50" y="40" width="180" height="60" fill="#E3F2FD" stroke="#2196F3" stroke-width="1" rx="5"/>
+  <text x="140" y="58" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#1565C0">诊断类型 (DiagnosticType)</text>
+  <text x="140" y="75" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">FULL_INSPECTION</text>
+  <text x="140" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">QUICK_CHECK</text>
+  <text x="140" y="100" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">PERFORMANCE_DIAG</text>
+</svg>

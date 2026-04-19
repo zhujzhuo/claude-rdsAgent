@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600">
+  <!-- Title -->
+  <text x="450" y="25" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="20" fill="#0D47A1">RDS Agent 系统架构图</text>
+
+  <!-- Layer 1: 用户交互层 -->
+  <rect x="50" y="50" width="800" height="80" fill="#f5f5f5" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="70" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">用户交互层</text>
+
+  <rect x="150" y="80" width="120" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="210" y="100" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#2196F3">CLI</text>
+  <text x="210" y="115" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">命令行界面</text>
+
+  <rect x="330" y="80" width="120" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="390" y="100" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#2196F3">Web API</text>
+  <text x="390" y="115" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">FastAPI接口</text>
+
+  <rect x="510" y="80" width="130" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="575" y="100" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#2196F3">Scheduler API</text>
+  <text x="575" y="115" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">巡检调度API</text>
+
+  <!-- Layer 2: Agent核心层 -->
+  <rect x="50" y="150" width="800" height="120" fill="#e3f2fd" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="170" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">Agent核心层 (LangGraph)</text>
+
+  <!-- Q&A Agent -->
+  <rect x="100" y="185" width="170" height="70" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <rect x="100" y="185" width="170" height="18" fill="#E91E63" rx="5"/>
+  <text x="185" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">问答Agent</text>
+  <text x="185" y="218" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">意图识别</text>
+  <text x="185" y="233" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">工具执行</text>
+  <text x="185" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">响应生成</text>
+
+  <!-- Diagnostic Agent -->
+  <rect x="300" y="185" width="170" height="70" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <rect x="300" y="185" width="170" height="18" fill="#9C27B0" rx="5"/>
+  <text x="385" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">诊断Agent</text>
+  <text x="385" y="218" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">13项检查</text>
+  <text x="385" y="233" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">结果分析</text>
+  <text x="385" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">报告生成</text>
+
+  <!-- Scheduler -->
+  <rect x="500" y="185" width="170" height="70" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
+  <rect x="500" y="185" width="170" height="18" fill="#00BCD4" rx="5"/>
+  <text x="585" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">调度器</text>
+  <text x="585" y="218" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">任务调度</text>
+  <text x="585" y="233" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">告警引擎</text>
+  <text x="585" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">历史存储</text>
+
+  <!-- Layer 3: 工具层 -->
+  <rect x="50" y="290" width="800" height="80" fill="#e8f5e9" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="310" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">工具层 (LangChain Tools)</text>
+
+  <rect x="80" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="122" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">instance</text>
+  <text x="122" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">实例信息</text>
+
+  <rect x="175" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="217" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">performance</text>
+  <text x="217" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">性能监控</text>
+
+  <rect x="270" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="312" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">sql</text>
+  <text x="312" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">SQL诊断</text>
+
+  <rect x="365" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="407" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">connection</text>
+  <text x="407" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">连接诊断</text>
+
+  <rect x="460" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="502" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">storage</text>
+  <text x="502" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">存储分析</text>
+
+  <rect x="555" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="597" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">parameters</text>
+  <text x="597" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">参数查询</text>
+
+  <rect x="650" y="325" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="692" y="340" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">knowledge</text>
+  <text x="692" y="355" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">知识检索</text>
+
+  <!-- Layer 4: 数据访问层 -->
+  <rect x="50" y="390" width="800" height="80" fill="#fff3e0" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="410" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">数据访问层</text>
+
+  <rect x="100" y="420" width="140" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="170" y="435" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">MySQL Client</text>
+  <text x="170" y="450" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">直连数据库</text>
+
+  <rect x="260" y="420" width="140" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="330" y="435" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Instance Platform</text>
+  <text x="330" y="450" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">实例管理平台</text>
+
+  <rect x="420" y="420" width="140" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="490" y="435" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Monitor API</text>
+  <text x="490" y="450" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">监控平台</text>
+
+  <rect x="580" y="420" width="140" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="650" y="435" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Vector Store</text>
+  <text x="650" y="450" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">向量知识库</text>
+
+  <!-- Layer 5: LLM层 -->
+  <rect x="50" y="490" width="800" height="80" fill="#fce4ec" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="510" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">LLM层 (本地部署)</text>
+
+  <rect x="250" y="520" width="160" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="330" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#E91E63">Ollama</text>
+  <text x="330" y="550" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Qwen2.5-14B</text>
+
+  <rect x="450" y="520" width="160" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="530" y="535" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#E91E63">Embeddings</text>
+  <text x="530" y="550" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">nomic-embed-text</text>
+
+  <!-- Arrows -->
+  <line x1="210" y1="120" x2="185" y2="185" stroke="#1976D2" stroke-width="2"/>
+  <line x1="390" y1="120" x2="185" y2="185" stroke="#1976D2" stroke-width="2"/>
+  <line x1="575" y1="120" x2="585" y2="185" stroke="#1976D2" stroke-width="2"/>
+
+  <line x1="185" y1="255" x2="122" y2="325" stroke="#1976D2" stroke-width="1"/>
+  <line x1="385" y1="255" x2="312" y2="325" stroke="#1976D2" stroke-width="1"/>
+  <line x1="585" y1="255" x2="170" y2="420" stroke="#1976D2" stroke-width="1"/>
+
+  <line x1="122" y1="360" x2="170" y2="420" stroke="#1976D2" stroke-width="1"/>
+  <line x1="312" y1="360" x2="170" y2="420" stroke="#1976D2" stroke-width="1"/>
+  <line x1="692" y1="360" x2="650" y2="420" stroke="#1976D2" stroke-width="1"/>
+</svg>

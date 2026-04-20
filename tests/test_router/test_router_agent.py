@@ -10,7 +10,9 @@ from rds_agent.router.agent import (
     get_router_agent,
     create_router_agent,
 )
+from rds_agent.router.classifier import QuestionCategory
 from rds_agent.core.state import IntentType
+from rds_agent.skills.base import SkillType
 
 
 class TestRouterAgentInit:
@@ -97,58 +99,57 @@ class TestComplexityEvaluation:
 
 
 class TestAgentSelection:
-    """Agent 选择测试"""
+    """Agent 选择测试（三层路由）"""
 
-    def test_select_agent_simple_to_hermes(self):
-        """测试简单任务选择 Hermes"""
+    def test_select_agent_simple_qa_to_hermes(self):
+        """测试简单问答选择 Hermes"""
         agent = RouterAgent(enable_hermes=True)
-        selected = agent.select_agent("查看实例信息")
+        selected, skill_type = agent.select_agent("什么是Buffer Pool")
         assert selected == AgentType.HERMES
+        assert skill_type is None
 
-    def test_select_agent_medium_to_langgraph(self):
-        """测试中等任务选择 LangGraph"""
+    def test_select_agent_sop_skill_cpu(self):
+        """测试 SOP Skill - CPU 分析"""
         agent = RouterAgent(enable_hermes=True)
-        selected = agent.select_agent("db-01的性能情况")
+        selected, skill_type = agent.select_agent("db-01的CPU使用率过高")
+        assert selected == AgentType.SKILL
+        assert skill_type == SkillType.CPU_ANALYSIS
+
+    def test_select_agent_sop_skill_storage(self):
+        """测试 SOP Skill - 存储分析"""
+        agent = RouterAgent(enable_hermes=True)
+        selected, skill_type = agent.select_agent("db-01磁盘空间不足")
+        assert selected == AgentType.SKILL
+        assert skill_type == SkillType.STORAGE_ANALYSIS
+
+    def test_select_agent_general_to_langgraph(self):
+        """测试 GENERAL 选择 LangGraph"""
+        agent = RouterAgent(enable_hermes=True)
+        selected, skill_type = agent.select_agent("db-01的性能情况")
         assert selected == AgentType.LANGGRAPH
+        assert skill_type is None
 
     def test_select_agent_complex_to_diagnostic(self):
         """测试复杂任务选择 Diagnostic"""
         agent = RouterAgent(enable_hermes=True)
-        selected = agent.select_agent("完整巡检db-01")
+        selected, skill_type = agent.select_agent("完整巡检db-01")
         assert selected == AgentType.DIAGNOSTIC
+        assert skill_type is None
 
-    def test_select_agent_hermes_disabled_fallback(self):
-        """测试 Hermes 禁用时回退到 LangGraph"""
+    def test_select_agent_hermes_disabled_simple_qa(self):
+        """测试 Hermes 禁用时简单问答回退到 LangGraph"""
         agent = RouterAgent(enable_hermes=False)
-        selected = agent.select_agent("查看实例信息")
+        selected, skill_type = agent.select_agent("什么是Buffer Pool")
         assert selected == AgentType.LANGGRAPH
+        assert skill_type is None
 
-    def test_select_agent_hermes_disabled_complex_to_diagnostic(self):
-        """测试 Hermes 禁用时复杂任务仍使用 Diagnostic"""
-        agent = RouterAgent(enable_hermes=False)
-        selected = agent.select_agent("完整巡检db-01")
-        assert selected == AgentType.DIAGNOSTIC
-
-    def test_select_agent_config_override_hermes(self):
-        """测试配置强制指定 Hermes"""
-        agent = RouterAgent(agent_type=AgentType.HERMES, enable_hermes=True)
-        # 简单任务仍使用 Hermes
-        selected = agent.select_agent("查看实例信息")
-        assert selected == AgentType.HERMES
-
-    def test_select_agent_config_override_hermes_complex(self):
-        """测试配置指定 Hermes 但复杂任务强制使用 Diagnostic"""
-        agent = RouterAgent(agent_type=AgentType.HERMES, enable_hermes=True)
-        # 复杂任务强制使用 Diagnostic
-        selected = agent.select_agent("完整巡检db-01")
-        assert selected == AgentType.DIAGNOSTIC
-
-    def test_select_agent_config_override_langgraph(self):
-        """测试配置强制指定 LangGraph"""
-        agent = RouterAgent(agent_type=AgentType.LANGGRAPH)
-        # 所有任务使用 LangGraph
-        selected = agent.select_agent("查看实例信息")
+    def test_select_agent_sop_skill_no_instance(self):
+        """测试 SOP Skill 无实例名称，降级为 GENERAL"""
+        agent = RouterAgent(enable_hermes=True)
+        # 有 CPU 关键词但无实例名称
+        selected, skill_type = agent.select_agent("CPU使用率过高怎么办")
         assert selected == AgentType.LANGGRAPH
+        assert skill_type is None
 
 
 class TestQuickIntentClassify:
@@ -244,10 +245,10 @@ class TestInvoke:
         agent = RouterAgent(enable_hermes=True)
         agent._hermes_agent = mock_hermes
 
-        result = agent.invoke("查看实例列表")
+        result = agent.invoke("什么是Buffer Pool")
 
         assert result["agent_type"] == AgentType.HERMES.value
-        assert result["complexity"] == ComplexityLevel.SIMPLE.value
+        assert result["question_category"] == QuestionCategory.SIMPLE_QA.value
         assert result["response"] == "test result"
 
     @patch("rds_agent.router.agent.RDSAgent")
@@ -263,7 +264,7 @@ class TestInvoke:
         result = agent.invoke("db-01性能情况", thread_id="test-thread")
 
         assert result["agent_type"] == AgentType.LANGGRAPH.value
-        assert result["complexity"] == ComplexityLevel.MEDIUM.value
+        assert result["question_category"] == QuestionCategory.GENERAL.value
         assert result["response"] == "test response"
 
     @patch("rds_agent.router.agent.DiagnosticAgent")
@@ -289,8 +290,33 @@ class TestInvoke:
         result = agent.invoke("完整巡检db-01")
 
         assert result["agent_type"] == AgentType.DIAGNOSTIC.value
-        assert result["complexity"] == ComplexityLevel.COMPLEX.value
+        assert result["question_category"] == QuestionCategory.GENERAL.value
         assert "诊断报告" in result["response"]
+
+    @patch("rds_agent.router.agent.get_skill_executor")
+    def test_invoke_skill(self, mock_get_executor):
+        """测试 Skill 执行"""
+        mock_executor = MagicMock()
+        mock_executor.execute.return_value = {
+            "skill_type": "cpu_analysis",
+            "sop_name": "cpu_analysis_sop",
+            "instance_name": "db-01",
+            "root_cause": "业务突增导致会话激增",
+            "progress": 100,
+            "conclusion": "CPU 分析结论",
+            "key_findings": [],
+            "recommendations": [],
+        }
+        mock_get_executor.return_value = mock_executor
+
+        agent = RouterAgent(enable_hermes=True)
+        agent._skill_executor = mock_executor
+
+        result = agent.invoke("db-01的CPU使用率过高")
+
+        assert result["agent_type"] == AgentType.SKILL.value
+        assert result["question_category"] == QuestionCategory.SOP_SKILL.value
+        assert "CPU" in result["response"] or "Skill" in result["response"]
 
 
 class TestChat:

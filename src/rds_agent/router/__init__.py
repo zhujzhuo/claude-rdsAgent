@@ -1,9 +1,9 @@
-"""Router Agent 模块 - 双 Agent 自动路由选择器。
+"""Router Agent 模块 - 三层问题分类路由。
 
-该模块提供根据任务复杂度自动选择合适 Agent 的功能：
-- 简单任务（单工具调用） -> Hermes Agent（快速响应）
-- 中等任务（多工具调用） -> LangGraph Agent（状态机编排）
-- 复杂任务（完整诊断） -> DiagnosticAgent（13项检查）
+该模块提供根据问题类型自动选择执行路径的功能：
+- 简单常识问答 (SIMPLE_QA) -> Hermes Agent + 知识库
+- 专业垂直类问题 (SOP_SKILL) -> Skills/SOP 标准化流程
+- 泛化问题 (GENERAL) -> LangGraph Agent 自主规划
 """
 
 from .agent import (
@@ -13,6 +13,12 @@ from .agent import (
     get_router_agent,
     create_router_agent,
 )
+from .classifier import (
+    QuestionCategory,
+    QuestionClassifier,
+    get_classifier,
+    classify_question,
+)
 
 __all__ = [
     "RouterAgent",
@@ -20,4 +26,8 @@ __all__ = [
     "ComplexityLevel",
     "get_router_agent",
     "create_router_agent",
+    "QuestionCategory",
+    "QuestionClassifier",
+    "get_classifier",
+    "classify_question",
 ]

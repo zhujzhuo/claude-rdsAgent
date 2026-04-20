@@ -1,12 +1,19 @@
-"""RouterAgent - 双 Agent 自动路由选择器。"""
+"""RouterAgent - 三层问题分类路由选择器。"""
 
 from enum import Enum
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 
 from rds_agent.core.agent import RDSAgent, get_agent
 from rds_agent.core.state import IntentType
 from rds_agent.hermes.agent import HermesAgent, get_hermes_agent
 from rds_agent.diagnostic.agent import DiagnosticAgent, get_diagnostic_agent
+from rds_agent.router.classifier import (
+    QuestionCategory,
+    QuestionClassifier,
+    get_classifier,
+)
+from rds_agent.skills.base import SkillType, SkillState
+from rds_agent.skills.executor import SkillExecutor, get_skill_executor
 from rds_agent.utils.config import settings
 from rds_agent.utils.logger import get_logger
 
@@ -24,10 +31,11 @@ class ComplexityLevel(str, Enum):
 class AgentType(str, Enum):
     """Agent 类型"""
 
-    LANGGRAPH = "langgraph"
-    HERMES = "hermes"
-    DIAGNOSTIC = "diagnostic"
-    AUTO = "auto"  # 自动选择
+    LANGGRAPH = "langgraph"   # LangGraph Agent 自主规划
+    HERMES = "hermes"         # Hermes Agent 快速响应
+    DIAGNOSTIC = "diagnostic" # Diagnostic Agent 完整巡检
+    SKILL = "skill"           # Skills/SOP 标准化流程
+    AUTO = "auto"             # 自动选择
 
 
 # 意图关键词映射（从 core/nodes.py 复制）
@@ -65,7 +73,7 @@ INTENT_KEYWORDS: Dict[IntentType, List[str]] = {
 
 
 class RouterAgent:
-    """双 Agent 路由选择器 - 根据任务复杂度自动选择 Agent"""
+    """三层问题分类路由选择器 - 根据问题类型自动选择执行路径"""
 
     # 意图复杂度映射
     INTENT_COMPLEXITY_MAP: Dict[IntentType, ComplexityLevel] = {
@@ -113,6 +121,8 @@ class RouterAgent:
         self._langgraph_agent: Optional[RDSAgent] = None
         self._hermes_agent: Optional[HermesAgent] = None
         self._diagnostic_agent: Optional[DiagnosticAgent] = None
+        self._skill_executor: Optional[SkillExecutor] = None
+        self._classifier: Optional[QuestionClassifier] = None
 
         logger.info(
             f"RouterAgent 初始化完成: type={self.agent_type}, "
@@ -136,6 +146,18 @@ class RouterAgent:
         if self._diagnostic_agent is None:
             self._diagnostic_agent = get_diagnostic_agent()
         return self._diagnostic_agent
+
+    def _get_skill_executor(self) -> SkillExecutor:
+        """获取 Skill 执行器（懒加载）"""
+        if self._skill_executor is None:
+            self._skill_executor = get_skill_executor()
+        return self._skill_executor
+
+    def _get_classifier(self) -> QuestionClassifier:
+        """获取问题分类器（懒加载）"""
+        if self._classifier is None:
+            self._classifier = get_classifier()
+        return self._classifier
 
     def evaluate_complexity(
         self,
@@ -200,9 +222,9 @@ class RouterAgent:
         message: str,
         complexity: Optional[ComplexityLevel] = None,
         intent: Optional[IntentType] = None,
-    ) -> AgentType:
+    ) -> Tuple[AgentType, Optional[SkillType]]:
         """
-        选择合适的 Agent
+        选择合适的 Agent（三层路由）
 
         Args:
             message: 用户消息
@@ -210,42 +232,47 @@ class RouterAgent:
             intent: 已识别的意图（可选）
 
         Returns:
-            推荐的 Agent 类型
+            Tuple[AgentType, Optional[SkillType]]
+            - Agent 类型
+            - 如果是 SKILL，返回对应的 SkillType
         """
-        # 配置优先模式
-        if self.agent_type != AgentType.AUTO:
-            logger.info(f"配置指定 Agent: {self.agent_type}")
-            # 如果配置指定的是 hermes，但任务是复杂诊断，仍需使用 diagnostic
-            if self.agent_type == AgentType.HERMES:
-                temp_complexity = complexity or self.evaluate_complexity(message, intent)
-                if temp_complexity == ComplexityLevel.COMPLEX:
-                    logger.info("复杂任务强制使用 DiagnosticAgent")
-                    return AgentType.DIAGNOSTIC
-            return self.agent_type
+        # Step 1: 三层问题分类
+        classifier = self._get_classifier()
+        question_category, skill_type = classifier.classify(message)
 
-        # Hermes 未启用时，默认使用 LangGraph
-        if not self.enable_hermes:
-            logger.info("Hermes 未启用，使用 LangGraph")
-            temp_complexity = complexity or self.evaluate_complexity(message, intent)
-            if temp_complexity == ComplexityLevel.COMPLEX:
-                return AgentType.DIAGNOSTIC
-            return AgentType.LANGGRAPH
+        logger.info(
+            f"问题分类: category={question_category.value}, "
+            f"skill_type={skill_type.value if skill_type else None}"
+        )
 
-        # 自动评估复杂度
+        # Step 2: 根据问题分类选择执行路径
+        # SIMPLE_QA -> Hermes + Knowledge
+        if question_category == QuestionCategory.SIMPLE_QA:
+            if self.enable_hermes:
+                logger.info("SIMPLE_QA -> Hermes")
+                return AgentType.HERMES, None
+            else:
+                logger.info("SIMPLE_QA -> LangGraph (Hermes 禁用)")
+                return AgentType.LANGGRAPH, None
+
+        # SOP_SKILL -> Skills/SOP 执行
+        if question_category == QuestionCategory.SOP_SKILL:
+            logger.info(f"SOP_SKILL -> Skill: {skill_type.value}")
+            return AgentType.SKILL, skill_type
+
+        # GENERAL -> 根据复杂度决定
+        # 复杂度评估
         if complexity is None:
             complexity = self.evaluate_complexity(message, intent)
 
-        # 根据复杂度选择 Agent
-        agent_mapping = {
-            ComplexityLevel.SIMPLE: AgentType.HERMES,      # 简单任务 -> Hermes（快速）
-            ComplexityLevel.MEDIUM: AgentType.LANGGRAPH,   # 中等任务 -> LangGraph
-            ComplexityLevel.COMPLEX: AgentType.DIAGNOSTIC,  # 复杂任务 -> Diagnostic
-        }
+        # 检查完整巡检
+        if complexity == ComplexityLevel.COMPLEX:
+            logger.info("GENERAL -> Diagnostic (复杂任务)")
+            return AgentType.DIAGNOSTIC, None
 
-        selected = agent_mapping[complexity]
-        logger.info(f"自动选择 Agent: {selected} (complexity={complexity})")
-
-        return selected
+        # 默认使用 LangGraph 自主规划
+        logger.info("GENERAL -> LangGraph")
+        return AgentType.LANGGRAPH, None
 
     def invoke(
         self,
@@ -254,7 +281,7 @@ class RouterAgent:
         instance: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        执行请求（自动路由）
+        执行请求（三层路由）
 
         Args:
             message: 用户消息
@@ -262,21 +289,43 @@ class RouterAgent:
             instance: 目标实例
 
         Returns:
-            执行结果，包含 response, agent_type, complexity 等字段
+            执行结果，包含 response, agent_type, question_category 等字段
         """
-        # 1. 评估复杂度并选择 Agent
-        complexity = self.evaluate_complexity(message)
-        agent_type = self.select_agent(message, complexity)
+        # 1. 三层问题分类
+        classifier = self._get_classifier()
+        question_category, skill_type = classifier.classify(message)
 
-        # 2. 根据选择执行
+        # 2. 选择 Agent
+        complexity = self.evaluate_complexity(message)
+        agent_type, resolved_skill_type = self.select_agent(message, complexity)
+
+        # 使用分类结果的 skill_type
+        if resolved_skill_type is None and skill_type is not None:
+            resolved_skill_type = skill_type
+
+        # 3. 初始化结果
         result: Dict[str, Any] = {
             "agent_type": agent_type.value,
+            "question_category": question_category.value,
             "complexity": complexity.value,
             "message": message,
         }
 
+        # 4. 根据选择执行
         try:
-            if agent_type == AgentType.HERMES:
+            if agent_type == AgentType.SKILL:
+                # Skills/SOP 执行
+                skill_result = self._execute_skill(
+                    message, resolved_skill_type, instance
+                )
+                result["response"] = self._format_skill_report(skill_result)
+                result["skill_result"] = {
+                    "skill_type": resolved_skill_type.value if resolved_skill_type else "",
+                    "root_cause": skill_result.get("root_cause"),
+                    "progress": skill_result.get("progress"),
+                }
+
+            elif agent_type == AgentType.HERMES:
                 # Hermes Agent 执行
                 agent = self._get_hermes_agent()
                 response = agent.invoke(message)
@@ -322,6 +371,115 @@ class RouterAgent:
 
         return result
 
+    def _execute_skill(
+        self,
+        message: str,
+        skill_type: Optional[SkillType],
+        instance: Optional[str] = None,
+    ) -> SkillState:
+        """执行 Skill
+
+        Args:
+            message: 用户消息
+            skill_type: Skill 类型
+            instance: 目标实例
+
+        Returns:
+            SkillState 执行结果
+        """
+        if skill_type is None:
+            logger.warning("Skill 类型未识别，回退到 LangGraph")
+            agent = self._get_langgraph_agent()
+            state = agent.invoke(message)
+            # 转换为 SkillState 格式
+            return {
+                "skill_type": "",
+                "sop_name": "",
+                "instance_name": "",
+                "context": {},
+                "step_results": [],
+                "current_step": 0,
+                "progress": 0,
+                "conclusion": state.get("response", ""),
+                "root_cause": None,
+                "key_findings": [],
+                "recommendations": [],
+                "error": None,
+            }
+
+        # 提取实例名称
+        instance_name = instance or self._extract_instance(message)
+        if not instance_name:
+            logger.warning("Skill 缺少实例名称")
+            return {
+                "skill_type": skill_type.value,
+                "sop_name": "",
+                "instance_name": "",
+                "context": {},
+                "step_results": [],
+                "current_step": 0,
+                "progress": 0,
+                "conclusion": "请指定实例名称",
+                "root_cause": None,
+                "key_findings": [],
+                "recommendations": [],
+                "error": "缺少实例名称",
+            }
+
+        # 执行 Skill
+        executor = self._get_skill_executor()
+        result = executor.execute(skill_type, instance_name)
+
+        return result
+
+    def _format_skill_report(self, skill_result: SkillState) -> str:
+        """格式化 Skill 报告"""
+        if skill_result is None:
+            return "Skill 执行未能生成结果"
+
+        # 使用 conclusion 或生成默认报告
+        if skill_result.get("conclusion"):
+            return skill_result["conclusion"]
+
+        lines = [
+            f"## Skill 分析报告: {skill_result.get('skill_type', '')}",
+            f"- 实例: {skill_result.get('instance_name', '')}",
+            f"- SOP: {skill_result.get('sop_name', '')}",
+            f"- 进度: {skill_result.get('progress', 0)}%",
+            "",
+        ]
+
+        # 根因
+        root_cause = skill_result.get("root_cause")
+        if root_cause:
+            lines.append("### 根因定位")
+            lines.append(root_cause)
+            lines.append("")
+
+        # 关键发现
+        key_findings = skill_result.get("key_findings", [])
+        if key_findings:
+            lines.append("### 关键发现")
+            for finding in key_findings:
+                lines.append(finding)
+            lines.append("")
+
+        # 优化建议
+        recommendations = skill_result.get("recommendations", [])
+        if recommendations:
+            lines.append("### 优化建议")
+            for rec in recommendations:
+                lines.append(f"- {rec}")
+            lines.append("")
+
+        # 错误
+        error = skill_result.get("error")
+        if error:
+            lines.append("### 错误")
+            lines.append(error)
+
+        return "\n".join(lines)
+
     def chat(self, message: str, thread_id: Optional[str] = None) -> str:
         """
         简化的聊天接口
@@ -344,10 +502,23 @@ class RouterAgent:
             message: 用户消息
             thread_id: 会话 ID
         """
-        complexity = self.evaluate_complexity(message)
-        agent_type = self.select_agent(message, complexity)
+        # 三层分类
+        classifier = self._get_classifier()
+        question_category, skill_type = classifier.classify(message)
 
-        if agent_type == AgentType.HERMES:
+        # 选择 Agent
+        complexity = self.evaluate_complexity(message)
+        agent_type, resolved_skill_type = self.select_agent(message, complexity)
+
+        if resolved_skill_type is None and skill_type is not None:
+            resolved_skill_type = skill_type
+
+        if agent_type == AgentType.SKILL:
+            # Skill 执行（不支持流式，直接返回结果）
+            skill_result = self._execute_skill(message, resolved_skill_type)
+            yield {"agent": "skill", "result": skill_result}
+
+        elif agent_type == AgentType.HERMES:
             agent = self._get_hermes_agent()
             for chunk in agent.stream(message):
                 yield {"agent": "hermes", "chunk": chunk}

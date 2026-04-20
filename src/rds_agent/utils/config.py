@@ -20,6 +20,21 @@ class OllamaSettings(BaseSettings):
     embed_model: str = "nomic-embed-text"
 
 
+class HermesSettings(BaseSettings):
+    """Hermes Agent配置 (NousResearch Hermes Function Calling)"""
+
+    model_config = SettingsConfigDict(env_prefix="HERMES_")
+
+    # Hermes 模型选择: hermes2pro, hermes3
+    model: str = "hermes3"
+    # 是否启用 Hermes 作为默认 Agent
+    enabled: bool = False
+    # 最大工具调用迭代次数
+    max_iterations: int = 10
+    # 请求超时
+    timeout: float = 60.0
+
+
 class InstancePlatformSettings(BaseSettings):
     """实例管理平台配置"""
 
@@ -116,6 +131,8 @@ class AgentSettings(BaseSettings):
 
     max_iterations: int = 10
     timeout_seconds: int = 60
+    # Agent 类型: langgraph (默认), hermes (Function Calling)
+    type: str = "langgraph"
 
 
 class LogSettings(BaseSettings):
@@ -137,6 +154,7 @@ class Settings(BaseSettings):
     )
 
     ollama: OllamaSettings = OllamaSettings()
+    hermes: HermesSettings = HermesSettings()
     instance_platform: InstancePlatformSettings = InstancePlatformSettings()
     mysql: MySQLSettings = MySQLSettings()
     database: DatabaseSettings = DatabaseSettings()

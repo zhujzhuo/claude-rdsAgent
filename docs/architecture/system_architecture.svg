@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="950" height="680">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="750">
   <!-- Title -->
-  <text x="475" y="25" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="20" fill="#0D47A1">RDS Agent 系统架构图 (Django + Celery)</text>
+  <text x="500" y="25" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="20" fill="#0D47A1">RDS Agent 系统架构图 (Django + Celery + Hermes)</text>
 
   <!-- Layer 1: 用户交互层 -->
-  <rect x="50" y="50" width="850" height="80" fill="#f5f5f5" stroke="#333" stroke-width="2" rx="5"/>
+  <rect x="50" y="50" width="900" height="80" fill="#f5f5f5" stroke="#333" stroke-width="2" rx="5"/>
   <text x="70" y="70" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">用户交互层</text>
 
   <rect x="100" y="80" width="100" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
@@ -27,166 +27,161 @@
   <text x="765" y="100" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#2196F3">Notification</text>
   <text x="765" y="115" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">DingTalk/Email/WeChat</text>
 
-  <!-- Layer 2: Agent核心层 -->
-  <rect x="50" y="150" width="400" height="130" fill="#e3f2fd" stroke="#333" stroke-width="2" rx="5"/>
-  <text x="70" y="170" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">Agent核心层 (LangGraph)</text>
+  <!-- Layer 2: Agent核心层 (双架构) -->
+  <rect x="50" y="150" width="900" height="150" fill="#E3F2FD" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="170" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">Agent核心层 (双架构)</text>
+
+  <!-- LangGraph Agent -->
+  <rect x="70" y="185" width="380" height="100" fill="#fff" stroke="#9C27B0" stroke-width="2" rx="5"/>
+  <rect x="70" y="185" width="380" height="18" fill="#9C27B0" rx="5"/>
+  <text x="260" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">LangGraph Agent (复杂流程)</text>
 
   <!-- Q&A Agent -->
-  <rect x="80" y="185" width="170" height="80" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
-  <rect x="80" y="185" width="170" height="18" fill="#E91E63" rx="5"/>
-  <text x="165" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">问答Agent</text>
-  <text x="165" y="218" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">意图识别</text>
-  <text x="165" y="233" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">工具执行</text>
-  <text x="165" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">响应生成</text>
+  <rect x="90" y="210" width="160" height="65" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="3"/>
+  <text x="170" y="225" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#7B1FA2">问答Agent</text>
+  <text x="170" y="240" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">意图识别</text>
+  <text x="170" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">状态机编排</text>
+  <text x="170" y="270" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">LangChain Tools</text>
 
   <!-- Diagnostic Agent -->
-  <rect x="270" y="185" width="170" height="80" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
-  <rect x="270" y="185" width="170" height="18" fill="#9C27B0" rx="5"/>
-  <text x="355" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">诊断Agent</text>
-  <text x="355" y="218" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">13项检查</text>
-  <text x="355" y="233" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">结果分析</text>
-  <text x="355" y="248" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">报告生成</text>
+  <rect x="260" y="210" width="180" height="65" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="3"/>
+  <text x="350" y="225" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#7B1FA2">诊断Agent</text>
+  <text x="350" y="240" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">13项检查</text>
+  <text x="350" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">报告生成</text>
+  <text x="350" y="270" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">参数优化</text>
 
-  <!-- Layer 2b: Django + Celery -->
-  <rect x="470" y="150" width="430" height="130" fill="#FFF3E0" stroke="#333" stroke-width="2" rx="5"/>
-  <text x="490" y="170" font-family="Arial" font-weight="bold" font-size="14" fill="#E65100">Django + Celery 层</text>
+  <!-- Hermes Agent -->
+  <rect x="470" y="185" width="380" height="100" fill="#fff" stroke="#E91E63" stroke-width="2" rx="5"/>
+  <rect x="470" y="185" width="380" height="18" fill="#E91E63" rx="5"/>
+  <text x="660" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#fff">Hermes Agent (Function Calling)</text>
+
+  <!-- Hermes Components -->
+  <rect x="490" y="210" width="120" height="65" fill="#FCE4EC" stroke="#E91E63" stroke-width="1" rx="3"/>
+  <text x="550" y="225" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#C2185B">HermesAgent</text>
+  <text x="550" y="240" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">原生工具调用</text>
+  <text x="550" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">自动循环</text>
+  <text x="550" y="270" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">OpenAI格式</text>
+
+  <rect x="620" y="210" width="110" height="65" fill="#FCE4EC" stroke="#E91E63" stroke-width="1" rx="3"/>
+  <text x="675" y="225" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#C2185B">HermesClient</text>
+  <text x="675" y="240" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Ollama API</text>
+  <text x="675" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Hermes 3</text>
+  <text x="675" y="270" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">工具解析</text>
+
+  <rect x="740" y="210" width="100" height="65" fill="#FCE4EC" stroke="#E91E63" stroke-width="1" rx="3"/>
+  <text x="790" y="225" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#C2185B">ToolRegistry</text>
+  <text x="790" y="240" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">8个RDS工具</text>
+  <text x="790" y="255" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">FunctionSchema</text>
+  <text x="790" y="270" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Handler执行</text>
+
+  <!-- Layer 3: Django + Celery 层 -->
+  <rect x="50" y="320" width="900" height="90" fill="#FFF3E0" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="340" font-family="Arial" font-weight="bold" font-size="14" fill="#E65100">Django + Celery 层</text>
 
   <!-- Django ORM -->
-  <rect x="490" y="185" width="130" height="80" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
-  <rect x="490" y="185" width="130" height="18" fill="#3F51B5" rx="5"/>
-  <text x="555" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">Django ORM</text>
-  <text x="555" y="218" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">InspectionTask</text>
-  <text x="555" y="233" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">TaskExecution</text>
-  <text x="555" y="248" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">AlertRule/Event</text>
+  <rect x="100" y="355" width="130" height="45" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="165" y="370" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#3F51B5">Django ORM</text>
+  <text x="165" y="385" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">6个模型</text>
 
   <!-- Celery Tasks -->
-  <rect x="640" y="185" width="130" height="80" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
-  <rect x="640" y="185" width="130" height="18" fill="#FF9800" rx="5"/>
-  <text x="705" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">Celery Tasks</text>
-  <text x="705" y="218" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">run_inspection</text>
-  <text x="705" y="233" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">check_alerts</text>
-  <text x="705" y="248" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">send_notification</text>
+  <rect x="250" y="355" width="130" height="45" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="315" y="370" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#FF9800">Celery Tasks</text>
+  <text x="315" y="385" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">5个任务</text>
 
   <!-- Services -->
-  <rect x="790" y="185" width="100" height="80" fill="#fff" stroke="#666" stroke-width="1" rx="5"/>
-  <rect x="790" y="185" width="100" height="18" fill="#00BCD4" rx="5"/>
-  <text x="840" y="198" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#fff">Services</text>
-  <text x="840" y="218" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">TaskService</text>
-  <text x="840" y="233" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">AlertService</text>
-  <text x="840" y="248" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">HistoryService</text>
+  <rect x="400" y="355" width="130" height="45" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="465" y="370" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#00BCD4">Services</text>
+  <text x="465" y="385" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">4个服务</text>
 
-  <!-- Layer 3: 工具层 -->
-  <rect x="50" y="300" width="850" height="80" fill="#e8f5e9" stroke="#333" stroke-width="2" rx="5"/>
-  <text x="70" y="320" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">工具层 (LangChain Tools)</text>
+  <!-- API ViewSets -->
+  <rect x="550" y="355" width="130" height="45" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="615" y="370" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#3F51B5">DRF ViewSets</text>
+  <text x="615" y="385" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">5个ViewSet</text>
 
-  <rect x="80" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="125" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">instance</text>
-  <text x="125" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">实例信息</text>
+  <!-- Celery Beat -->
+  <rect x="700" y="355" width="130" height="45" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="765" y="370" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#FF5722">Celery Beat</text>
+  <text x="765" y="385" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">django-celery-beat</text>
 
-  <rect x="180" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="225" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">performance</text>
-  <text x="225" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">性能监控</text>
+  <!-- Layer 4: 工具层 -->
+  <rect x="50" y="430" width="900" height="80" fill="#e8f5e9" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="450" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">工具层 (LangChain Tools / Hermes Tools)</text>
 
-  <rect x="280" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="325" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">sql</text>
-  <text x="325" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">SQL诊断</text>
+  <rect x="80" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="122" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">instance</text>
 
-  <rect x="380" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="425" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">connection</text>
-  <text x="425" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">连接诊断</text>
+  <rect x="175" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="217" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">performance</text>
 
-  <rect x="480" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="525" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">storage</text>
-  <text x="525" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">存储分析</text>
+  <rect x="270" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="312" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">sql</text>
 
-  <rect x="580" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="625" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">parameters</text>
-  <text x="625" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">参数查询</text>
+  <rect x="365" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="407" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">connection</text>
 
-  <rect x="680" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="725" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">knowledge</text>
-  <text x="725" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">知识检索</text>
+  <rect x="460" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="502" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">storage</text>
 
-  <rect x="780" y="340" width="90" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="825" y="355" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">diagnostic</text>
-  <text x="825" y="368" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">诊断工具</text>
+  <rect x="555" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="597" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">parameters</text>
 
-  <!-- Layer 4: 数据存储层 -->
-  <rect x="50" y="400" width="850" height="80" fill="#fff3e0" stroke="#333" stroke-width="2" rx="5"/>
-  <text x="70" y="420" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">数据存储层</text>
+  <rect x="650" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="692" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">knowledge</text>
 
-  <rect x="100" y="435" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="175" y="450" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">MySQL (Django)</text>
-  <text x="175" y="465" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">任务/告警/历史存储</text>
+  <rect x="745" y="470" width="85" height="35" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="787" y="485" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">diagnostic</text>
 
-  <rect x="270" y="435" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="345" y="450" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Redis</text>
-  <text x="345" y="465" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Celery Broker</text>
+  <!-- Layer 5: 数据存储层 -->
+  <rect x="50" y="530" width="900" height="80" fill="#fff3e0" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="550" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">数据存储层</text>
 
-  <rect x="440" y="435" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="515" y="450" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">MySQL Client</text>
-  <text x="515" y="465" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">直连数据库诊断</text>
+  <rect x="100" y="565" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="175" y="580" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">MySQL (Django)</text>
+  <text x="175" y="595" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">任务/告警/历史存储</text>
 
-  <rect x="610" y="435" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="685" y="450" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Vector Store</text>
-  <text x="685" y="465" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">ChromaDB知识库</text>
+  <rect x="270" y="565" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="345" y="580" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Redis</text>
+  <text x="345" y="595" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">Celery Broker</text>
 
-  <rect x="780" y="435" width="110" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="835" y="450" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Platform API</text>
-  <text x="835" y="465" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">实例管理平台</text>
+  <rect x="440" y="565" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="515" y="580" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">MySQL Client</text>
+  <text x="515" y="595" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">直连数据库诊断</text>
 
-  <!-- Layer 5: LLM层 -->
-  <rect x="50" y="500" width="850" height="80" fill="#fce4ec" stroke="#333" stroke-width="2" rx="5"/>
-  <text x="70" y="520" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">LLM层 (本地部署)</text>
+  <rect x="610" y="565" width="150" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="685" y="580" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Vector Store</text>
+  <text x="685" y="595" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">ChromaDB知识库</text>
 
-  <rect x="200" y="535" width="180" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="290" y="550" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#E91E63">Ollama</text>
-  <text x="290" y="565" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">Qwen2.5-14B</text>
+  <rect x="780" y="565" width="110" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="835" y="580" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#FF9800">Platform API</text>
+  <text x="835" y="595" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">实例管理平台</text>
 
-  <rect x="420" y="535" width="180" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
-  <text x="510" y="550" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#E91E63">Embeddings</text>
-  <text x="510" y="565" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">nomic-embed-text</text>
+  <!-- Layer 6: LLM层 -->
+  <rect x="50" y="630" width="900" height="80" fill="#fce4ec" stroke="#333" stroke-width="2" rx="5"/>
+  <text x="70" y="650" font-family="Arial" font-weight="bold" font-size="14" fill="#1565C0">LLM层 (本地部署)</text>
+
+  <rect x="150" y="665" width="180" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="240" y="680" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#E91E63">Ollama</text>
+  <text x="240" y="695" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">Qwen2.5-14B (LangGraph)</text>
+
+  <rect x="370" y="665" width="180" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="460" y="680" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#E91E63">Hermes 3</text>
+  <text x="460" y="695" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">Function Calling (原生)</text>
+
+  <rect x="590" y="665" width="180" height="40" fill="#fff" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="680" y="680" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="12" fill="#E91E63">Embeddings</text>
+  <text x="680" y="695" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">nomic-embed-text</text>
 
   <!-- Legend -->
-  <rect x="50" y="600" width="850" height="60" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="5"/>
-  <text x="70" y="620" font-family="Arial" font-weight="bold" font-size="11" fill="#333">颜色说明:</text>
-
-  <rect x="70" y="630" width="16" height="12" fill="#E91E63" rx="2"/>
-  <text x="90" y="638" font-family="Arial" font-size="10" fill="#333">core - 问答Agent</text>
-
-  <rect x="180" y="630" width="16" height="12" fill="#9C27B0" rx="2"/>
-  <text x="200" y="638" font-family="Arial" font-size="10" fill="#333">diagnostic - 诊断Agent</text>
-
-  <rect x="320" y="630" width="16" height="12" fill="#3F51B5" rx="2"/>
-  <text x="340" y="638" font-family="Arial" font-size="10" fill="#333">Django ORM</text>
-
-  <rect x="420" y="630" width="16" height="12" fill="#FF9800" rx="2"/>
-  <text x="440" y="638" font-family="Arial" font-size="10" fill="#333">Celery Tasks</text>
-
-  <rect x="520" y="630" width="16" height="12" fill="#00BCD4" rx="2"/>
-  <text x="540" y="638" font-family="Arial" font-size="10" fill="#333">Services</text>
-
-  <rect x="620" y="630" width="16" height="12" fill="#4CAF50" rx="2"/>
-  <text x="640" y="638" font-family="Arial" font-size="10" fill="#333">tools - 工具层</text>
-
-  <rect x="720" y="630" width="16" height="12" fill="#FF9800" rx="2"/>
-  <text x="740" y="638" font-family="Arial" font-size="10" fill="#333">data - 数据存储</text>
-
-  <!-- Arrows -->
-  <line x1="150" y1="120" x2="165" y2="185" stroke="#1976D2" stroke-width="2"/>
-  <line x1="295" y1="120" x2="555" y2="185" stroke="#1976D2" stroke-width="2"/>
-  <line x1="455" y1="120" x2="705" y2="185" stroke="#1976D2" stroke-width="2"/>
-  <line x1="605" y1="120" x2="705" y2="185" stroke="#1976D2" stroke-width="2"/>
-  <line x1="765" y1="120" x2="840" y2="185" stroke="#1976D2" stroke-width="2"/>
-
-  <line x1="165" y1="265" x2="125" y2="340" stroke="#1976D2" stroke-width="1"/>
-  <line x1="355" y1="265" x2="325" y2="340" stroke="#1976D2" stroke-width="1"/>
-  <line x1="555" y1="265" x2="175" y2="435" stroke="#1976D2" stroke-width="1"/>
-  <line x1="705" y1="265" x2="355" y2="435" stroke="#1976D2" stroke-width="1"/>
-  <line x1="840" y1="265" x2="175" y2="435" stroke="#1976D2" stroke-width="1"/>
-
-  <line x1="125" y1="375" x2="175" y2="435" stroke="#1976D2" stroke-width="1"/>
-  <line x1="525" y1="375" x2="515" y2="435" stroke="#1976D2" stroke-width="1"/>
-  <line x1="725" y1="375" x2="685" y2="435" stroke="#1976D2" stroke-width="1"/>
-  <line x1="825" y1="375" x2="835" y2="435" stroke="#1976D2" stroke-width="1"/>
+  <rect x="50" y="720" width="900" height="25" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="3"/>
+  <rect x="70" y="725" width="12" height="12" fill="#9C27B0" rx="2"/>
+  <text x="85" y="733" font-family="Arial" font-size="9" fill="#333">LangGraph</text>
+  <rect x="150" y="725" width="12" height="12" fill="#E91E63" rx="2"/>
+  <text x="165" y="733" font-family="Arial" font-size="9" fill="#333">Hermes</text>
+  <rect x="230" y="725" width="12" height="12" fill="#3F51B5" rx="2"/>
+  <text x="245" y="733" font-family="Arial" font-size="9" fill="#333">Django</text>
+  <rect x="310" y="725" width="12" height="12" fill="#FF9800" rx="2"/>
+  <text x="325" y="733" font-family="Arial" font-size="9" fill="#333">Celery</text>
+  <rect x="380" y="725" width="12" height="12" fill="#4CAF50" rx="2"/>
+  <text x="395" y="733" font-family="Arial" font-size="9" fill="#333">Tools</text>
+  <text x="800" y="733" text-anchor="end" font-family="Arial" font-size="9" fill="#666">双 Agent 架构: LangGraph + Hermes</text>
 </svg>

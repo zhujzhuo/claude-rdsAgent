@@ -131,8 +131,23 @@ class AgentSettings(BaseSettings):
 
     max_iterations: int = 10
     timeout_seconds: int = 60
-    # Agent 类型: langgraph (默认), hermes (Function Calling)
-    type: str = "langgraph"
+    # Agent 类型: langgraph, hermes, auto (自动选择)
+    type: str = "auto"
+
+
+class RouterSettings(BaseSettings):
+    """Router Agent 配置（双 Agent 自动选择）"""
+
+    model_config = SettingsConfigDict(env_prefix="ROUTER_")
+
+    # 是否启用自动选择模式
+    auto_select: bool = True
+    # Hermes 优先阈值（复杂度分数低于此值使用 Hermes）
+    hermes_threshold: int = 30
+    # Diagnostic 阈值（复杂度分数高于此值使用 Diagnostic）
+    diagnostic_threshold: int = 70
+    # 默认 Agent（当 auto_select=False 时）: langgraph, hermes, diagnostic
+    default_agent: str = "auto"
 
 
 class LogSettings(BaseSettings):
@@ -155,6 +170,7 @@ class Settings(BaseSettings):
 
     ollama: OllamaSettings = OllamaSettings()
     hermes: HermesSettings = HermesSettings()
+    router: RouterSettings = RouterSettings()
     instance_platform: InstancePlatformSettings = InstancePlatformSettings()
     mysql: MySQLSettings = MySQLSettings()
     database: DatabaseSettings = DatabaseSettings()

@@ -12,7 +12,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from rds_agent import __version__, settings
-from rds_agent.core import get_agent, RDSAgent
+from rds_agent.router import get_router_agent, RouterAgent, AgentType
 from rds_agent.utils.logger import get_logger
 
 logger = get_logger("cli")
@@ -95,11 +95,20 @@ def run_cli(instance: Optional[str] = None) -> None:
 
     print_welcome(console)
 
-    # 初始化Agent
+    # 初始化 RouterAgent（自动选择 Agent）
     try:
-        agent = get_agent()
+        agent = get_router_agent()
+        console.print(
+            Panel(
+                f"[bold green]Agent 路由模式[/bold green]\n"
+                f"[blue]自动选择: Hermes(简单) / LangGraph(中等) / Diagnostic(复杂)[/blue]\n"
+                f"[yellow]Hermes 启用: {settings.hermes.enabled}[/yellow]",
+                title="[bold cyan]路由信息[/bold cyan]",
+                border_style="cyan",
+            )
+        )
     except Exception as e:
-        console.print(f"[red]初始化Agent失败: {e}[/red]")
+        console.print(f"[red]初始化RouterAgent失败: {e}[/red]")
         return
 
     # 会话ID

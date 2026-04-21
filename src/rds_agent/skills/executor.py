@@ -1,6 +1,12 @@
-"""Skills/SOP 执行器 - 管理 Skill 实例和执行调度"""
+"""Skills/SOP 执行器 - 管理 Skill 实例和执行调度
 
-from typing import Dict, List, Optional, Type
+支持两种 Skill 定义方式：
+1. Python 文件定义 (静态 Skill 类)
+2. Markdown 文档定义 (动态生成)
+"""
+
+from pathlib import Path
+from typing import Dict, List, Optional, Type, Union
 
 from rds_agent.skills.base import (
     BaseSkill,
@@ -19,14 +25,21 @@ class SkillExecutor:
     1. 注册和管理各类 Skill 实例
     2. 根据 SkillType 查找对应的 Skill
     3. 执行 Skill 并返回结果
+    4. 支持从 Markdown 文档动态加载 Skill
     """
 
-    def __init__(self, mysql_client=None, tools_registry: Dict = None):
+    def __init__(
+        self,
+        mysql_client=None,
+        tools_registry: Dict = None,
+        load_markdown: bool = True,
+    ):
         """初始化执行器
 
         Args:
             mysql_client: MySQL 数据库客户端
             tools_registry: 工具函数注册表
+            load_markdown: 是否加载 Markdown Skill
         """
         self.mysql_client = mysql_client
         self.tools_registry = tools_registry or {}
@@ -34,11 +47,15 @@ class SkillExecutor:
         # Skill 注册表
         self._skills: Dict[SkillType, BaseSkill] = {}
 
-        # 自动注册已定义的 Skill
+        # 自动注册 Python Skill
         self._auto_register()
 
+        # 加载 Markdown Skill
+        if load_markdown:
+            self._load_markdown_skills()
+
     def _auto_register(self) -> None:
-        """自动注册已定义的 Skill 类"""
+        """自动注册 Python Skill 类"""
         try:
             from rds_agent.skills.cpu_skill import CPUAnalysisSkill
             self.register_skill(CPUAnalysisSkill)
@@ -63,19 +80,106 @@ class SkillExecutor:
         except ImportError:
             logger.debug("ConnectionAnalysisSkill 未找到，跳过注册")
 
-    def register_skill(self, skill_class: Type[BaseSkill]) -> None:
-        """注册 Skill 类
+    def _load_markdown_skills(self) -> None:
+        """加载 Markdown Skill 文档"""
+        try:
+            from rds_agent.skills.parser import (
+                SkillGenerator,
+                MarkdownSkill,
+            )
+
+            generator = SkillGenerator()
+            skills_dir = generator.skills_dir
+
+            if not skills_dir.exists():
+                logger.debug("Markdown Skills 目录不存在")
+                return
+
+            skill_files = generator.parser.list_skill_files()
+
+            for file_path in skill_files:
+                if file_path.name == "README.md":
+                    continue
+
+                try:
+                    skill = MarkdownSkill(
+                        str(file_path),
+                        mysql_client=self.mysql_client,
+                        tools_registry=self.tools_registry,
+                    )
+                    skill_type = skill.skill_type
+
+                    # 如果已存在，不覆盖 Python Skill
+                    if skill_type not in self._skills:
+                        self._skills[skill_type] = skill
+                        logger.info(f"从 Markdown 加载 Skill: {skill_type.value}")
+                    else:
+                        logger.debug(f"Skill {skill_type.value} 已存在，跳过 Markdown 版本")
+
+                except Exception as e:
+                    logger.warning(f"加载 Markdown Skill 失败: {file_path} - {e}")
+
+        except ImportError:
+            logger.debug("Markdown Skill 解析器未找到")
+
+    def register_skill(
+        self,
+        skill_class: Union[Type[BaseSkill], BaseSkill],
+        overwrite: bool = False,
+    ) -> None:
+        """注册 Skill
 
         Args:
-            skill_class: Skill 类（不是实例）
+            skill_class: Skill 类或实例
+            overwrite: 是否覆盖已存在的 Skill
         """
-        skill_instance = skill_class(
-            mysql_client=self.mysql_client,
-            tools_registry=self.tools_registry
-        )
+        # 如果传入的是类，创建实例
+        if isinstance(skill_class, type):
+            skill_instance = skill_class(
+                mysql_client=self.mysql_client,
+                tools_registry=self.tools_registry,
+            )
+        else:
+            skill_instance = skill_class
+
         skill_type = skill_instance.skill_type
+
+        if skill_type in self._skills and not overwrite:
+            logger.debug(f"Skill {skill_type.value} 已存在，跳过注册")
+            return
+
         self._skills[skill_type] = skill_instance
         logger.info(f"已注册 Skill: {skill_type.value}")
+
+    def register_markdown_skill(
+        self,
+        markdown_path: str,
+        overwrite: bool = False,
+    ) -> bool:
+        """从 Markdown 文件注册 Skill
+
+        Args:
+            markdown_path: Markdown 文件路径
+            overwrite: 是否覆盖已存在的 Skill
+
+        Returns:
+            是否成功注册
+        """
+        try:
+            from rds_agent.skills.parser import MarkdownSkill
+
+            skill = MarkdownSkill(
+                markdown_path,
+                mysql_client=self.mysql_client,
+                tools_registry=self.tools_registry,
+            )
+
+            self.register_skill(skill, overwrite)
+            return True
+
+        except Exception as e:
+            logger.error(f"注册 Markdown Skill 失败: {markdown_path} - {e}")
+            return False
 
     def get_skill(self, skill_type: SkillType) -> Optional[BaseSkill]:
         """获取指定类型的 Skill
@@ -131,6 +235,42 @@ class SkillExecutor:
     def has_skill(self, skill_type: SkillType) -> bool:
         """检查 Skill 是否已注册"""
         return skill_type in self._skills
+
+    def reload_markdown_skills(self) -> int:
+        """重新加载 Markdown Skill
+
+        Returns:
+            加载的 Skill 数量
+        """
+        count = 0
+        try:
+            from rds_agent.skills.parser import SkillGenerator, MarkdownSkill
+
+            generator = SkillGenerator()
+            skill_files = generator.parser.list_skill_files()
+
+            for file_path in skill_files:
+                if file_path.name == "README.md":
+                    continue
+
+                try:
+                    skill = MarkdownSkill(
+                        str(file_path),
+                        mysql_client=self.mysql_client,
+                        tools_registry=self.tools_registry,
+                    )
+                    skill_type = skill.skill_type
+                    self._skills[skill_type] = skill
+                    count += 1
+                    logger.info(f"重新加载 Markdown Skill: {skill_type.value}")
+
+                except Exception as e:
+                    logger.warning(f"重新加载失败: {file_path} - {e}")
+
+        except ImportError:
+            logger.warning("Markdown Skill 解析器未找到")
+
+        return count
 
 
 # 全局单例

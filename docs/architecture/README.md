@@ -17,6 +17,11 @@
   - Hermes Agent: Function Calling Agent (快速问答)
   - LangGraph Agent: 问答Agent、诊断Agent (状态机编排)
   - Skills/SOP: 标准化诊断流程 (精确规划)
+- **Agent自我迭代层** (新增):
+  - IterationLoop: 迭代循环管理
+  - ReflectionEngine: 自我反思机制
+  - ResultEvaluator: 结果评估器
+  - AgentMemory: 记忆系统
 - **Django + Celery 层**: Django ORM、Celery Tasks、Services
 - **工具层 (LangChain Tools)**: instance、performance、sql、connection、storage、parameters、knowledge、diagnostic
 - **数据存储层**: MySQL (Django)、Redis (Celery Broker)、MySQL Client、Vector Store、Platform API
@@ -32,10 +37,18 @@
   - api/ (DRF ViewSets) → models, services
   - tasks/ (Celery) → diagnostic, services
   - services/ → models, external
-- **router** (新增):
-  - agent.py → classifier, skills, hermes, core, diagnostic
+- **router**:
+  - agent.py → classifier, skills, hermes, core, diagnostic, **agent (迭代)**
   - classifier.py → skills (SkillType)
-- **skills** (新增):
+- **agent** (新增):
+  - base.py → iteration, evaluator, memory
+  - iteration.py → evaluator, reflection
+  - reflection.py → evaluator
+  - evaluator.py → memory
+  - memory.py → (独立)
+  - tool_executor.py → (独立)
+  - state.py → (独立)
+- **skills**:
   - executor.py → cpu_skill, storage_skill, sql_skill, connection_skill
   - cpu_skill.py → sops/cpu_sop, base
   - storage_skill.py → base
@@ -185,6 +198,155 @@ SIMPLE_QA  SOP_SKILL    GENERAL
 
 ---
 
+## Agent 自我迭代模块（新增）
+
+### 架构概述
+
+Agent 自我迭代模块实现了 Hermes Agent 的核心思想：**执行 → 评估 → 反思 → 改进 → 迭代** 循环。
+
+**核心组件**:
+- `IterationLoop`: 迭代循环管理
+- `ReflectionEngine`: 自我反思机制
+- `ResultEvaluator`: 结果评估器
+- `AgentMemory`: 记忆系统（学习积累）
+- `ToolExecutor`: 工具执行器
+- `IterativeRouterAgent`: 支持迭代的 RouterAgent
+
+### 迭代循环流程
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  Iteration Loop                      │
+│                                                      │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐     │
+│   │ Execute  │───→│ Evaluate │───→│ Reflect  │     │
+│   │   Agent  │    │  Result  │    │  Analyze │     │
+│   └──────────┘    └──────────┘    └──────────┘     │
+│        ↑              │              │              │
+│        │              ↓              ↓              │
+│        │         ┌──────────┐  ┌──────────┐        │
+│        │         │  Check   │  │ Generate │        │
+│        │         │Terminate │  │Improve   │        │
+│        │         └──────────┘  └──────────┘        │
+│        │              │              │              │
+│        └──────────────┴──────────────┘              │
+│                                                      │
+│   Memory: 存储历史、学习模式                          │
+└─────────────────────────────────────────────────────┘
+```
+
+### 迭代策略
+
+| 策略 | 说明 | 适用场景 |
+|------|------|----------|
+| NONE | 不迭代，单次执行 | 简单问题 |
+| CONSERVATIVE | 仅当不合格时迭代 | 质量优先 |
+| AGGRESSIVE | 总是尝试迭代改进 | 性能优化 |
+| BALANCED | 根据评估动态决定 | 通用场景 |
+| SKILL_BASED | SOP/Skill 驱动迭代 | 专业诊断 |
+
+### 终止条件
+
+| 终止原因 | 说明 |
+|----------|------|
+| SUCCESS | 达到目标质量分数 |
+| QUALITY_THRESHOLD | 达到最低质量阈值 |
+| MAX_ITERATIONS | 达到最大迭代次数 |
+| CONVERGENCE | 连续迭代无改进（收敛） |
+| TIMEOUT | 执行超时 |
+| ERROR | 执行错误 |
+
+### 结果评估维度
+
+| 评估维度 | 权重 | 说明 |
+|----------|------|------|
+| COMPLETENESS | 0.30 | 响应完整性 |
+| ACCURACY | 0.25 | 内容准确性 |
+| READABILITY | 0.15 | 结构可读性 |
+| EFFECTIVENESS | 0.15 | 工具使用效率 |
+| ERROR_FREE | 0.15 | 无执行错误 |
+
+### 反思机制
+
+**反思类型**:
+- `QUALITY`: 质量反思（分析输出质量）
+- `ERROR`: 错误反思（分析执行错误）
+- `STRATEGY`: 策略反思（分析执行策略）
+- `SELF`: 自我反思（评估迭代效果）
+
+**反思深度**:
+- `SURFACE`: 表层反思（仅分析输出）
+- `MODERATE`: 中层反思（分析过程和输出）
+- `DEEP`: 深层反思（分析根因和策略）
+
+### 记忆系统
+
+**记忆类型**:
+- `EXECUTION`: 执行记忆（工具调用、响应）
+- `REFLECTION`: 反思记忆（分析、改进建议）
+- `EVALUATION`: 评估记忆（评分、质量）
+- `LEARNING`: 学习记忆（提取的模式、规则）
+- `ERROR`: 错误记忆（错误信息和处理）
+- `SUCCESS`: 成功记忆（成功的模式）
+
+**学习机制**:
+- 工具序列模式提取
+- 错误模式识别
+- 成功策略总结
+- 推荐生成
+
+### IterativeRouterAgent
+
+扩展 RouterAgent 支持自我迭代：
+
+```python
+class IterativeRouterAgent(RouterAgent):
+    def invoke_with_iteration(message) -> Dict:
+        """带迭代的执行"""
+        # 1. 初始化迭代循环
+        # 2. 执行 Agent
+        # 3. 评估结果
+        # 4. 反思分析
+        # 5. 检查终止条件
+        # 6. 应用改进（如需继续）
+        # 7. 返回最佳结果
+
+    def invoke(message, enable_iteration=False) -> Dict:
+        """可选迭代的执行"""
+```
+
+### 配置示例
+
+```python
+# 迭代配置
+config = IterationConfig(
+    strategy=IterationStrategy.BALANCED,
+    max_iterations=5,
+    min_quality_score=0.7,
+    target_quality_score=0.9,
+    enable_reflection=True,
+    enable_memory=True,
+)
+
+agent = IterativeRouterAgent(iteration_config=config)
+result = agent.invoke(message, enable_iteration=True)
+```
+
+### 模块文件
+
+| 文件 | 说明 |
+|------|------|
+| `agent/base.py` | Agent 基类，迭代策略定义 |
+| `agent/iteration.py` | IterationLoop，迭代循环管理 |
+| `agent/reflection.py` | ReflectionEngine，反思机制 |
+| `agent/evaluator.py` | ResultEvaluator，结果评估 |
+| `agent/memory.py` | AgentMemory，记忆系统 |
+| `agent/state.py` | AgentState，状态管理 |
+| `agent/tool_executor.py` | ToolExecutor，工具执行器 |
+| `router/agent.py` | IterativeRouterAgent 集成 |
+
+---
+
 ## 三架构 Agent 详解
 
 ### 1. Hermes Agent (快速问答)
@@ -300,7 +462,16 @@ def select_agent(message):
 - **skills/sql_skill.py**: SQL 优化 Skill
 - **skills/connection_skill.py**: 连接分析 Skill
 
-### Phase 4: 自动化巡检系统 (Django + Celery)
+### Phase 4: Agent 自我迭代模块（新增）
+- **agent/base.py**: BaseAgent, IterationStrategy, AgentConfig
+- **agent/iteration.py**: IterationLoop, TerminationReason
+- **agent/reflection.py**: ReflectionEngine, ReflectionType
+- **agent/evaluator.py**: ResultEvaluator, EvaluationCriterion
+- **agent/memory.py**: AgentMemory, MemoryType
+- **agent/state.py**: AgentState, StateManager
+- **agent/tool_executor.py**: ToolExecutor, HermesStyleToolExecutor
+
+### Phase 5: 自动化巡检系统 (Django + Celery)
 
 #### Django ORM Models
 | 模型 | 说明 |
@@ -395,7 +566,7 @@ rds-agent chat
 
 ## 目录文件统计
 
-- **源文件**: 70+
-- **测试文件**: 60+
-- **模块**: 11个 (django_project, scheduler, router, skills, hermes, diagnostic, core, tools, utils, memory, api)
-- **架构**: Django 4.2 + Celery 5.3 + MySQL + Redis + RouterAgent + Skills/SOP
+- **源文件**: 80+
+- **测试文件**: 70+
+- **模块**: 12个 (django_project, scheduler, router, skills, agent, hermes, diagnostic, core, tools, utils, memory, api)
+- **架构**: Django 4.2 + Celery 5.3 + MySQL + Redis + RouterAgent + Skills/SOP + Agent Self-Iteration

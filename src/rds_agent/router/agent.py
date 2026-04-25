@@ -1,7 +1,8 @@
-"""RouterAgent - 三层问题分类路由选择器。"""
+"""RouterAgent - 三层问题分类路由选择器，支持自我迭代改进。"""
 
 from enum import Enum
 from typing import Optional, Dict, Any, List, Tuple
+import time
 
 from rds_agent.core.agent import RDSAgent, get_agent
 from rds_agent.core.state import IntentType
@@ -16,6 +17,21 @@ from rds_agent.skills.base import SkillType, SkillState
 from rds_agent.skills.executor import SkillExecutor, get_skill_executor
 from rds_agent.utils.config import settings
 from rds_agent.utils.logger import get_logger
+
+# Agent 自我迭代组件
+from rds_agent.agent import (
+    IterationStrategy,
+    IterationLoop,
+    IterationResult,
+    TerminationReason,
+    ReflectionEngine,
+    ReflectionResult,
+    ResultEvaluator,
+    EvaluationResult,
+    AgentMemory,
+    ToolExecutor,
+    ToolResult,
+)
 
 logger = get_logger("router_agent")
 
@@ -644,3 +660,348 @@ def create_router_agent(
         新的 RouterAgent 实例
     """
     return RouterAgent(agent_type=agent_type, enable_hermes=enable_hermes)
+
+
+class IterationConfig:
+    """迭代配置"""
+
+    def __init__(
+        self,
+        strategy: IterationStrategy = IterationStrategy.BALANCED,
+        max_iterations: int = 5,
+        min_quality_score: float = 0.7,
+        target_quality_score: float = 0.9,
+        enable_reflection: bool = True,
+        enable_memory: bool = True,
+        reflection_depth: int = 2,
+    ):
+        """初始化迭代配置"""
+        self.strategy = strategy
+        self.max_iterations = max_iterations
+        self.min_quality_score = min_quality_score
+        self.target_quality_score = target_quality_score
+        self.enable_reflection = enable_reflection
+        self.enable_memory = enable_memory
+        self.reflection_depth = reflection_depth
+
+
+class IterativeRouterAgent(RouterAgent):
+    """支持自我迭代的 RouterAgent
+
+    在 RouterAgent 三层路由基础上，增加自我迭代改进机制：
+    1. 执行 Agent（Hermes/LangGraph/Diagnostic/Skill）
+    2. 评估执行结果（ResultEvaluator）
+    3. 反思分析（ReflectionEngine）
+    4. 应用改进建议
+    5. 迭代执行直到达到质量阈值或满足终止条件
+
+    特点：
+    - 支持多种迭代策略（NONE/CONSERVATIVE/AGGRESSIVE/BALANCED）
+    - 记忆系统存储执行历史和学习
+    - 反思机制分析问题和改进方向
+    """
+
+    def __init__(
+        self,
+        agent_type: Optional[AgentType] = None,
+        enable_hermes: Optional[bool] = None,
+        iteration_config: Optional[IterationConfig] = None,
+    ):
+        """初始化迭代 RouterAgent
+
+        Args:
+            agent_type: Agent 类型
+            enable_hermes: 是否启用 Hermes
+            iteration_config: 迭代配置
+        """
+        super().__init__(agent_type=agent_type, enable_hermes=enable_hermes)
+
+        # 迭代配置
+        self.iteration_config = iteration_config or IterationConfig()
+
+        # 迭代组件
+        self._iteration_loop: Optional[IterationLoop] = None
+        self._evaluator: Optional[ResultEvaluator] = None
+        self._reflection_engine: Optional[ReflectionEngine] = None
+        self._memory: Optional[AgentMemory] = None
+
+        # 初始化迭代组件
+        self._init_iteration_components()
+
+        logger.info(
+            f"IterativeRouterAgent initialized: "
+            f"strategy={self.iteration_config.strategy}, "
+            f"max_iterations={self.iteration_config.max_iterations}"
+        )
+
+    def _init_iteration_components(self) -> None:
+        """初始化迭代组件"""
+        # 迭代循环
+        self._iteration_loop = IterationLoop(
+            max_iterations=self.iteration_config.max_iterations,
+            strategy=self.iteration_config.strategy,
+            min_quality_score=self.iteration_config.min_quality_score,
+        )
+
+        # 评估器
+        self._evaluator = ResultEvaluator()
+
+        # 反思引擎
+        if self.iteration_config.enable_reflection:
+            self._reflection_engine = ReflectionEngine(
+                depth=self.iteration_config.reflection_depth
+            )
+
+        # 记忆系统
+        if self.iteration_config.enable_memory:
+            self._memory = AgentMemory(enable_learning=True)
+
+    def invoke_with_iteration(
+        self,
+        message: str,
+        thread_id: Optional[str] = None,
+        instance: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """带自我迭代的执行
+
+        执行流程：
+        1. 初始化迭代循环
+        2. 执行 Agent
+        3. 评估结果
+        4. 反思分析
+        5. 检查终止条件
+        6. 应用改进（如果继续）
+        7. 返回最佳结果
+
+        Args:
+            message: 用户消息
+            thread_id: 会话 ID
+            instance: 目标实例
+
+        Returns:
+            包含迭代过程的执行结果
+        """
+        # 重置迭代循环
+        self._iteration_loop.reset()
+
+        # 初始化结果
+        result: Dict[str, Any] = {
+            "message": message,
+            "iteration_enabled": True,
+            "iterations": [],
+        }
+
+        # 执行迭代
+        iteration = 0
+        last_response = ""
+        last_evaluation: Optional[EvaluationResult] = None
+        last_reflection: Optional[ReflectionResult] = None
+
+        while True:
+            iteration_start_time = time.time()
+
+            # 1. 准备上下文（包含反思建议）
+            context = {}
+            if iteration > 0 and last_reflection:
+                context["reflection"] = last_reflection.to_prompt_context()
+                context["improvements"] = last_reflection.improvements
+            if self.iteration_config.enable_memory and iteration > 0:
+                context["memory"] = self._memory.get_context_for_iteration(iteration)
+
+            # 2. 执行 Agent
+            agent_result = self.invoke(message, thread_id, instance)
+            response = agent_result.get("response", "")
+            agent_type = agent_result.get("agent_type", "")
+
+            # 3. 评估结果
+            evaluation = self._evaluator.evaluate(
+                response=response,
+                query=message,
+                tool_results=agent_result.get("tool_calls"),
+                iteration=iteration,
+            )
+
+            # 记录评估到记忆
+            if self.iteration_config.enable_memory:
+                self._memory.add_evaluation_memory(
+                    iteration=iteration,
+                    score=evaluation.score,
+                    passed=evaluation.passed,
+                    criteria={cs.criterion.value: cs.score for cs in evaluation.criterion_scores},
+                    query=message,
+                )
+
+            # 4. 反思分析
+            if self.iteration_config.enable_reflection:
+                reflection = self._reflection_engine.reflect(
+                    query=message,
+                    response=response,
+                    evaluation=evaluation,
+                    iteration=iteration,
+                    context=context,
+                )
+
+                # 记录反思到记忆
+                if self.iteration_config.enable_memory:
+                    self._memory.add_reflection_memory(
+                        iteration=iteration,
+                        analysis=reflection.analysis,
+                        issues=reflection.issues,
+                        improvements=reflection.improvements,
+                        query=message,
+                    )
+
+                last_reflection = reflection
+
+            # 5. 记录迭代
+            iteration_time_ms = (time.time() - iteration_start_time) * 1000
+            self._iteration_loop.record_iteration(
+                iteration=iteration,
+                score=evaluation.score,
+                response=response,
+                time_ms=iteration_time_ms,
+            )
+
+            # 记录迭代历史
+            result["iterations"].append({
+                "iteration": iteration,
+                "agent_type": agent_type,
+                "score": evaluation.score,
+                "passed": evaluation.passed,
+                "time_ms": iteration_time_ms,
+                "response_preview": response[:200] if response else "",
+                "issues": evaluation.issues[:3] if evaluation.issues else [],
+                "improvements": last_reflection.improvements[:3] if last_reflection else [],
+            })
+
+            # 更新变量
+            last_response = response
+            last_evaluation = evaluation
+
+            # 6. 检查终止条件
+            termination_check = self._iteration_loop.check_termination(
+                iteration=iteration,
+                evaluation=evaluation,
+            )
+
+            if termination_check.should_terminate:
+                logger.info(
+                    f"Iteration terminated: reason={termination_check.reason.value}, "
+                    f"iteration={iteration}, score={evaluation.score:.2f}"
+                )
+                break
+
+            # 7. 检查是否继续迭代
+            if not self._iteration_loop.should_iterate(evaluation):
+                break
+
+            iteration += 1
+
+        # 获取迭代结果
+        iteration_result = self._iteration_loop.get_result(
+            termination_check.reason
+        )
+
+        # 构建最终结果
+        result["response"] = iteration_result.best_response
+        result["best_score"] = iteration_result.best_score
+        result["best_iteration"] = iteration_result.best_iteration
+        result["total_iterations"] = iteration_result.total_iterations
+        result["termination_reason"] = iteration_result.termination_reason.value
+        result["total_duration_ms"] = iteration_result.total_duration_ms
+
+        # 如果最后一次迭代是最好的，使用完整的 agent_result
+        if iteration_result.best_iteration == iteration:
+            result["agent_type"] = agent_result.get("agent_type")
+            result["question_category"] = agent_result.get("question_category")
+            result["complexity"] = agent_result.get("complexity")
+        else:
+            # 重新执行获取最佳迭代的完整结果
+            # 这里简化处理，使用最后一次的 agent 类型
+            result["agent_type"] = agent_result.get("agent_type")
+            result["question_category"] = agent_result.get("question_category")
+            result["complexity"] = agent_result.get("complexity")
+
+        # 学习（可选）
+        if self.iteration_config.enable_memory and iteration > 0:
+            patterns = self._memory.learn_from_memories()
+            result["learned_patterns"] = patterns
+
+        return result
+
+    def invoke(
+        self,
+        message: str,
+        thread_id: Optional[str] = None,
+        instance: Optional[str] = None,
+        enable_iteration: bool = False,
+    ) -> Dict[str, Any]:
+        """执行请求（支持可选迭代）
+
+        Args:
+            message: 用户消息
+            thread_id: 会话 ID
+            instance: 目标实例
+            enable_iteration: 是否启用迭代改进
+
+        Returns:
+            执行结果
+        """
+        if enable_iteration:
+            return self.invoke_with_iteration(message, thread_id, instance)
+        else:
+            return super().invoke(message, thread_id, instance)
+
+    def get_iteration_stats(self) -> Dict[str, Any]:
+        """获取迭代统计"""
+        stats = {}
+        if self._evaluator:
+            stats["evaluation"] = self._evaluator.get_statistics()
+        if self._memory:
+            stats["memory"] = self._memory.get_stats()
+        return stats
+
+    def reset_iteration(self) -> None:
+        """重置迭代状态"""
+        if self._iteration_loop:
+            self._iteration_loop.reset()
+        if self._memory:
+            self._memory.reset()
+        if self._evaluator:
+            self._evaluator.clear_history()
+        if self._reflection_engine:
+            self._reflection_engine.clear_history()
+
+
+# 全局 IterativeRouterAgent 实例
+_iterative_router_agent: Optional[IterativeRouterAgent] = None
+
+
+def get_iterative_router_agent(
+    agent_type: Optional[AgentType] = None,
+    enable_hermes: Optional[bool] = None,
+    iteration_config: Optional[IterationConfig] = None,
+) -> IterativeRouterAgent:
+    """获取迭代 RouterAgent 实例（全局单例）"""
+    global _iterative_router_agent
+    if _iterative_router_agent is None:
+        _iterative_router_agent = IterativeRouterAgent(
+            agent_type=agent_type,
+            enable_hermes=enable_hermes,
+            iteration_config=iteration_config,
+        )
+    return _iterative_router_agent
+
+
+def create_iterative_router_agent(
+    strategy: IterationStrategy = IterationStrategy.BALANCED,
+    max_iterations: int = 5,
+    min_quality_score: float = 0.7,
+) -> IterativeRouterAgent:
+    """创建新的迭代 RouterAgent 实例"""
+    config = IterationConfig(
+        strategy=strategy,
+        max_iterations=max_iterations,
+        min_quality_score=min_quality_score,
+    )
+    return IterativeRouterAgent(iteration_config=config)

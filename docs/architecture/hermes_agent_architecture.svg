@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; fill: #2c3e50; }
+      .subtitle { font: bold 16px sans-serif; fill: #34495e; }
+      .label { font: 14px sans-serif; fill: #2c3e50; }
+      .small-label { font: 12px sans-serif; fill: #555; }
+      .module-label { font: bold 13px sans-serif; fill: #fff; }
+      .entry-box { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; rx: 8; }
+      .core-box { fill: #3498db; stroke: #2980b9; stroke-width: 2; rx: 8; }
+      .agent-box { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; rx: 8; }
+      .tool-box { fill: #27ae60; stroke: #1e8449; stroke-width: 2; rx: 8; }
+      .gateway-box { fill: #f39c12; stroke: #d68910; stroke-width: 2; rx: 8; }
+      .skill-box { fill: #1abc9c; stroke: #16a085; stroke-width: 2; rx: 8; }
+      .storage-box { fill: #7f8c8d; stroke: #6c757d; stroke-width: 2; rx: 8; }
+      .arrow { stroke: #555; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .dashed-arrow { stroke: #888; stroke-width: 1.5; fill: none; stroke-dasharray: 5,3; marker-end: url(#arrowhead-light); }
+      .platform-box { fill: #e67e22; stroke: #d35400; stroke-width: 1.5; rx: 4; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="arrowhead-light" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 8 2.5, 0 5" fill="#888"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="35" class="title" text-anchor="middle">Hermes Agent 架构图</text>
+  <text x="600" y="60" class="subtitle" text-anchor="middle">Self-Improving AI Agent - Nous Research</text>
+
+  <!-- Entry Points Section -->
+  <rect x="50" y="100" width="200" height="120" class="entry-box"/>
+  <text x="150" y="130" class="module-label" text-anchor="middle">入口点</text>
+  <text x="150" y="155" class="label" text-anchor="middle">hermes_cli/main.py</text>
+  <text x="150" y="175" class="small-label" text-anchor="middle">CLI 主入口 (hermes)</text>
+  <text x="150" y="195" class="label" text-anchor="middle">run_agent.py</text>
+  <text x="150" y="215" class="small-label" text-anchor="middle">AIAgent 核心类</text>
+
+  <!-- Core Engine Section -->
+  <rect x="300" y="100" width="280" height="180" class="core-box"/>
+  <text x="440" y="130" class="module-label" text-anchor="middle">核心引擎</text>
+  <rect x="310" y="145" width="120" height="40" fill="#2980b9" rx="4"/>
+  <text x="370" y="170" class="label" text-anchor="middle" fill="#fff">AIAgent</text>
+  <rect x="440" y="145" width="130" height="40" fill="#2980b9" rx="4"/>
+  <text x="505" y="170" class="label" text-anchor="middle" fill="#fff">run_conversation()</text>
+  <text x="440" y="210" class="small-label" text-anchor="middle">对话循环 + 工具调用</text>
+  <text x="370" y="230" class="small-label" text-anchor="middle">API适配器:</text>
+  <text x="370" y="250" class="small-label" text-anchor="middle">OpenAI/Anthropic/Bedrock</text>
+
+  <!-- Tool System Section -->
+  <rect x="620" y="100" width="280" height="180" class="tool-box"/>
+  <text x="760" y="130" class="module-label" text-anchor="middle">工具系统</text>
+  <rect x="630" y="145" width="100" height="35" fill="#1e8449" rx="4"/>
+  <text x="680" y="167" class="label" text-anchor="middle" fill="#fff">Registry</text>
+  <rect x="740" y="145" width="150" height="35" fill="#1e8449" rx="4"/>
+  <text x="815" y="167" class="label" text-anchor="middle" fill="#fff">model_tools.py</text>
+  <text x="760" y="200" class="small-label" text-anchor="middle">40+ 工具:</text>
+  <text x="680" y="220" class="small-label" text-anchor="middle">terminal</text>
+  <text x="730" y="220" class="small-label" text-anchor="middle">browser</text>
+  <text x="780" y="220" class="small-label" text-anchor="middle">file_ops</text>
+  <text x="830" y="220" class="small-label" text-anchor="middle">web</text>
+  <text x="760" y="250" class="small-label" text-anchor="middle">delegate, skills, memory...</text>
+
+  <!-- Agent Auxiliary Section -->
+  <rect x="300" y="320" width="280" height="150" class="agent-box"/>
+  <text x="440" y="350" class="module-label" text-anchor="middle">代理辅助模块 (agent/)</text>
+  <text x="370" y="380" class="small-label" text-anchor="middle">prompt_builder</text>
+  <text x="500" y="380" class="small-label" text-anchor="middle">memory_manager</text>
+  <text x="370" y="405" class="small-label" text-anchor="middle">context_compressor</text>
+  <text x="500" y="405" class="small-label" text-anchor="middle">model_metadata</text>
+  <text x="370" y="430" class="small-label" text-anchor="middle">error_classifier</text>
+  <text x="500" y="430" class="small-label" text-anchor="middle">usage_pricing</text>
+  <text x="440" y="455" class="small-label" text-anchor="middle">credential_pool + 更多...</text>
+
+  <!-- Gateway Section -->
+  <rect x="50" y="320" width="200" height="200" class="gateway-box"/>
+  <text x="150" y="350" class="module-label" text-anchor="middle">消息网关 (gateway/)</text>
+  <rect x="60" y="370" width="80" height="30" fill="#d68910" rx="4"/>
+  <text x="100" y="390" class="label" text-anchor="middle" fill="#fff">run.py</text>
+  <rect x="150" y="370" width="90" height="30" fill="#d68910" rx="4"/>
+  <text x="195" y="390" class="label" text-anchor="middle" fill="#fff">session.py</text>
+  <text x="150" y="420" class="small-label" text-anchor="middle">平台适配器:</text>
+
+  <!-- Platform adapters -->
+  <rect x="65" y="435" width="55" height="25" class="platform-box"/>
+  <text x="92" y="452" class="small-label" text-anchor="middle" fill="#fff">Telegram</text>
+  <rect x="125" y="435" width="55" height="25" class="platform-box"/>
+  <text x="152" y="452" class="small-label" text-anchor="middle" fill="#fff">Discord</text>
+  <rect x="185" y="435" width="55" height="25" class="platform-box"/>
+  <text x="212" y="452" class="small-label" text-anchor="middle" fill="#fff">Slack</text>
+  <rect x="65" y="465" width="55" height="25" class="platform-box"/>
+  <text x="92" y="482" class="small-label" text-anchor="middle" fill="#fff">WhatsApp</text>
+  <rect x="125" y="465" width="55" height="25" class="platform-box"/>
+  <text x="152" y="482" class="small-label" text-anchor="middle" fill="#fff">Signal</text>
+  <rect x="185" y="465" width="55" height="25" class="platform-box"/>
+  <text x="212" y="482" class="small-label" text-anchor="middle" fill="#fff">Matrix</text>
+  <rect x="95" y="495" width="110" height="20" class="platform-box"/>
+  <text x="150" y="508" class="small-label" text-anchor="middle" fill="#fff">Email/Feishu/DingTalk</text>
+
+  <!-- Skills System -->
+  <rect x="620" y="320" width="280" height="150" class="skill-box"/>
+  <text x="760" y="350" class="module-label" text-anchor="middle">技能系统 (skills/)</text>
+  <text x="760" y="380" class="small-label" text-anchor="middle">自我改进 + 从经验创建</text>
+  <text x="680" y="410" class="small-label" text-anchor="middle">software-dev</text>
+  <text x="770" y="410" class="small-label" text-anchor="middle">research</text>
+  <text x="850" y="410" class="small-label" text-anchor="middle">creative</text>
+  <text x="680" y="435" class="small-label" text-anchor="middle">github</text>
+  <text x="770" y="435" class="small-label" text-anchor="middle">mlops</text>
+  <text x="850" y="435" class="small-label" text-anchor="middle">devops</text>
+  <text x="760" y="460" class="small-label" text-anchor="middle">skills_hub + agentskills.io</text>
+
+  <!-- Storage/Persistence -->
+  <rect x="940" y="100" width="220" height="180" class="storage-box"/>
+  <text x="1050" y="130" class="module-label" text-anchor="middle">持久化存储</text>
+  <text x="1050" y="160" class="small-label" text-anchor="middle">~/.hermes/</text>
+  <text x="1050" y="185" class="small-label" text-anchor="middle">hermes_state.py</text>
+  <text x="1050" y="210" class="small-label" text-anchor="middle">sessions.db (SQLite)</text>
+  <text x="1050" y="235" class="small-label" text-anchor="middle">MEMORY.md</text>
+  <text x="1050" y="260" class="small-label" text-anchor="middle">SOUL.md + AGENTS.md</text>
+
+  <!-- CLI Commands -->
+  <rect x="940" y="320" width="220" height="150" class="core-box"/>
+  <text x="1050" y="350" class="module-label" text-anchor="middle">CLI 命令</text>
+  <text x="1050" y="380" class="small-label" text-anchor="middle">hermes chat</text>
+  <text x="1050" y="405" class="small-label" text-anchor="middle">hermes gateway</text>
+  <text x="1050" y="430" class="small-label" text-anchor="middle">hermes model</text>
+  <text x="1050" y="455" class="small-label" text-anchor="middle">hermes tools / skills</text>
+
+  <!-- Arrows - Main flow -->
+  <path d="M 250 160 L 300 160" class="arrow"/>
+  <path d="M 580 160 L 620 160" class="arrow"/>
+  <path d="M 250 200 L 300 250" class="dashed-arrow"/>
+  <path d="M 580 250 L 620 250" class="dashed-arrow"/>
+
+  <!-- Arrows - Gateway to Agent -->
+  <path d="M 250 420 L 300 400" class="arrow"/>
+
+  <!-- Arrows - Agent modules -->
+  <path d="M 440 280 L 440 320" class="arrow"/>
+
+  <!-- Arrows - Skills -->
+  <path d="M 760 280 L 760 320" class="dashed-arrow"/>
+
+  <!-- Arrows - Storage -->
+  <path d="M 900 160 L 940 160" class="dashed-arrow"/>
+
+  <!-- Legend -->
+  <rect x="50" y="580" width="15" height="15" class="entry-box"/>
+  <text x="75" y="592" class="small-label">入口点</text>
+  <rect x="150" y="580" width="15" height="15" class="core-box"/>
+  <text x="175" y="592" class="small-label">核心引擎</text>
+  <rect x="250" y="580" width="15" height="15" class="agent-box"/>
+  <text x="275" y="592" class="small-label">代理模块</text>
+  <rect x="350" y="580" width="15" height="15" class="tool-box"/>
+  <text x="375" y="592" class="small-label">工具系统</text>
+  <rect x="450" y="580" width="15" height="15" class="gateway-box"/>
+  <text x="475" y="592" class="small-label">消息网关</text>
+  <rect x="550" y="580" width="15" height="15" class="skill-box"/>
+  <text x="575" y="592" class="small-label">技能系统</text>
+  <rect x="650" y="580" width="15" height="15" class="storage-box"/>
+  <text x="675" y="592" class="small-label">持久化</text>
+
+  <!-- Key Features -->
+  <text x="600" y="650" class="subtitle" text-anchor="middle">核心特性</text>
+  <rect x="50" y="670" width="350" height="120" fill="#ecf0f1" stroke="#bdc3c7" rx="8"/>
+  <text x="225" y="700" class="label" text-anchor="middle">自我改进学习循环</text>
+  <text x="100" y="730" class="small-label">✓ 从经验创建技能</text>
+  <text x="100" y="755" class="small-label">✓ 使用中改进技能</text>
+  <text x="100" y="780" class="small-label">✓ 搜索历史会话</text>
+
+  <rect x="420" y="670" width="350" height="120" fill="#ecf0f1" stroke="#bdc3c7" rx="8"/>
+  <text x="595" y="700" class="label" text-anchor="middle">多平台支持</text>
+  <text x="470" y="730" class="small-label">✓ CLI TUI (交互式终端)</text>
+  <text x="470" y="755" class="small-label">✓ Telegram/Discord/Slack</text>
+  <text x="470" y="780" class="small-label">✓ WhatsApp/Signal/Matrix</text>
+
+  <rect x="790" y="670" width="350" height="120" fill="#ecf0f1" stroke="#bdc3c7" rx="8"/>
+  <text x="965" y="700" class="label" text-anchor="middle">运行环境</text>
+  <text x="840" y="730" class="small-label">✓ Local/Docker/SSH</text>
+  <text x="840" y="755" class="small-label">✓ Daytona/Modal (无服务器)</text>
+  <text x="840" y="780" class="small-label">✓ 支持 200+ 模型</text>
+</svg>

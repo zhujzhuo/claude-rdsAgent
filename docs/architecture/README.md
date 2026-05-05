@@ -89,10 +89,24 @@
 - **Celery Beat Scheduler**: django-celery-beat PeriodicTask
 - **Notification Channels**: DingTalk, Email, WeChat, Webhook
 
-### 5. 项目目录结构图
-**文件**: [project_structure.svg](project_structure.svg)
+### 6. Hermes Agent 架构图
+**文件**: [hermes_agent_architecture.svg](hermes_agent_architecture.svg)
 
-展示项目的文件目录结构，包含新增的 `router/` 和 `skills/` 模块。
+展示 RDS Agent 中 HermesAgent 的架构设计：
+- **路由层**: RouterAgent → QuestionClassifier → SIMPLE_QA → HermesAgent
+- **核心组件**: HermesClient (Ollama API) + FunctionSchema/ToolRegistry + RDS 工具注册 + 知识库搜索
+- **Function Calling 循环**: 用户消息 → LLM 调用 → 工具调用? → 执行工具 → 追加结果 → 循环/返回
+- **配置项**: HERMES_ENABLED/HERMES_MODEL/HERMES_MAX_ITERATIONS/HERMES_TIMEOUT
+
+### 7. Hermes Agent 函数调用流程图
+**文件**: [hermes_agent_function_calls.svg](hermes_agent_function_calls.svg)
+
+展示 HermesAgent 的完整函数调用执行流程：
+- 用户输入 → 构建请求 → LLM 调用 → 决策(有无工具调用)
+- 有工具调用: ToolRegistry.execute() → 追加结果 → 循环回 LLM
+- 无工具调用: 知识库搜索 → 格式化响应 → 返回结果
+- 示例流程: "什么是 Buffer Pool？" 的完整调用链
+- 关键参数: max_iterations=10, timeout=60s, 8 RDS tools
 
 ---
 
@@ -462,7 +476,7 @@ def select_agent(message):
 - **skills/sql_skill.py**: SQL 优化 Skill
 - **skills/connection_skill.py**: 连接分析 Skill
 
-### Phase 4: Agent 自我迭代模块（新增）
+### Phase 4: Agent 自我迭代模块
 - **agent/base.py**: BaseAgent, IterationStrategy, AgentConfig
 - **agent/iteration.py**: IterationLoop, TerminationReason
 - **agent/reflection.py**: ReflectionEngine, ReflectionType
@@ -470,6 +484,13 @@ def select_agent(message):
 - **agent/memory.py**: AgentMemory, MemoryType
 - **agent/state.py**: AgentState, StateManager
 - **agent/tool_executor.py**: ToolExecutor, HermesStyleToolExecutor
+
+### Phase 5: MarkdownSkillParser 动态 Skill 生成（新增）
+- **skills/parser.py**: MarkdownSkillParser, MarkdownSkill, SkillGenerator
+  - MarkdownSkillParser: 解析 Markdown 文件为结构化数据（YAML/步骤/决策点/模板/建议）
+  - MarkdownSkill: 基于 Markdown 的动态 Skill 实现
+  - SkillGenerator: 批量生成和注册 MarkdownSkill
+  - 支持 YAML Front Matter + SOP 步骤表格 + 决策点表格 + 分析模板 + 优化建议
 
 ### Phase 5: 自动化巡检系统 (Django + Celery)
 
@@ -568,5 +589,6 @@ rds-agent chat
 
 - **源文件**: 80+
 - **测试文件**: 70+
-- **模块**: 12个 (django_project, scheduler, router, skills, agent, hermes, diagnostic, core, tools, utils, memory, api)
-- **架构**: Django 4.2 + Celery 5.3 + MySQL + Redis + RouterAgent + Skills/SOP + Agent Self-Iteration
+- **模块**: 12个 (django_project, scheduler, router, skills, agent, hermes, diagnostic, core, data, tools, utils, api)
+- **架构**: Django 4.2 + Celery 5.3 + MySQL + Redis + RouterAgent + Skills/SOP + Agent Self-Iteration + MarkdownSkillParser
+- **版本**: v0.2.0

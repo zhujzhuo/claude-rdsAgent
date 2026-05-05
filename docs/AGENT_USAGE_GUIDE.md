@@ -833,6 +833,102 @@ for iter_info in result["iterations"]:
 
 ## 版本信息
 
-- 文档版本: 1.0
-- 更新日期: 2024-04
-- 适用版本: RDS Agent v2.0+
+- 文档版本: 2.0
+- 更新日期: 2026-05
+- 适用版本: RDS Agent v0.2.0+
+
+---
+
+## MarkdownSkillParser 动态 Skill 生成
+
+### 1. 解析 Markdown 生成 Skill
+
+```python
+from rds_agent.skills.parser import MarkdownSkillParser, SkillGenerator, MarkdownSkill
+
+# 解析 Markdown 文件
+parser = MarkdownSkillParser()
+parsed = parser.parse_file("skills/docs/cpu_analysis.md")
+print(parsed["metadata"])      # YAML Front Matter
+print(parsed["steps"])          # SOP 步骤
+print(parsed["decision_points"]) # 决策点规则
+print(parsed["recommendations"]) # 优化建议
+
+# 构建 SOP 对象
+sop = parser.build_sop(parsed)
+print(sop.name, sop.steps, sop.decision_points)
+```
+
+### 2. 使用 SkillGenerator 自动生成
+
+```python
+from rds_agent.skills.parser import get_skill_generator, generate_all_markdown_skills
+
+# 生成所有 Markdown Skill
+skills = generate_all_markdown_skills()
+for skill_type, skill in skills.items():
+    print(f"{skill_type.value}: {skill.get_sop().name}")
+
+# 从指定文件生成
+generator = get_skill_generator()
+skill = generator.generate_skill("skills/docs/cpu_analysis.md")
+
+# 列出可用 Skill 文件
+files = generator.list_available_skills()
+print(files)  # ['cpu_analysis.md', ...]
+```
+
+### 3. Markdown Skill 文档格式
+
+```markdown
+---
+name: cpu_analysis
+skill_type: CPU_ANALYSIS
+description: CPU 使用率分析标准诊断流程
+version: 1.0
+author: system
+tags: [cpu, performance]
+---
+
+# CPU 分析 Skill
+
+## SOP 步骤
+
+| 序号 | 名称 | 工具 | 参数 | 条件 | 依赖 | 分析说明 | 超时 |
+|------|------|------|------|------|------|----------|------|
+| 1 | 获取监控数据 | get_monitoring_data | instance_name=$instance_name, metric_type=cpu_usage | - | - | 获取CPU监控 | 30s |
+| 2 | 检查会话突增 | check_session_change | instance_name=$instance_name | - | 1 | 关键决策点 | 30s |
+
+## 决策点
+
+### check_session_change
+
+| 规则名 | 条件 | 根因 | 动作 |
+|--------|------|------|------|
+| session_spike | `$session_change > 50` | 业务突增导致会话激增 | skip_steps=[3,5] |
+| no_spike | `$session_change <= 50` | - | continue |
+
+## 分析模板 / 优化建议 / 结论模板
+...
+```
+
+### 4. 创建新的 Skill 模板
+
+```python
+from rds_agent.skills.parser import get_skill_generator
+
+generator = get_skill_generator()
+file_path = generator.write_skill_template(
+    skill_name="memory_analysis",
+    skill_type="PERFORMANCE_ANALYSIS"
+)
+print(f"模板已创建: {file_path}")
+```
+
+### 5. SkillParser 核心类
+
+| 类 | 说明 |
+|----|------|
+| `MarkdownSkillParser` | 解析 Markdown 文件为结构化数据 |
+| `MarkdownSkill` | 基于 Markdown 的动态 Skill 实现 |
+| `SkillGenerator` | 批量生成和注册 MarkdownSkill |

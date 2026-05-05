@@ -1,224 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000">
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="850">
   <defs>
-    <style>
-      .title { font: bold 22px sans-serif; fill: #2c3e50; }
-      .func-title { font: bold 14px sans-serif; fill: #2c3e50; }
-      .func-name { font: 12px monospace; fill: #34495e; }
-      .small-text { font: 11px sans-serif; fill: #666; }
-      .entry-func { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; rx: 6; }
-      .core-func { fill: #3498db; stroke: #2980b9; stroke-width: 2; rx: 6; }
-      .tool-func { fill: #27ae60; stroke: #1e8449; stroke-width: 2; rx: 6; }
-      .helper-func { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; rx: 6; }
-      .callback-func { fill: #f39c12; stroke: #d68910; stroke-width: 2; rx: 6; }
-      .arrow { stroke: #555; stroke-width: 2; fill: none; marker-end: url(#arrow); }
-      .async-arrow { stroke: #27ae60; stroke-width: 2; fill: none; marker-end: url(#green-arrow); stroke-dasharray: 4,2; }
-      .callback-arrow { stroke: #f39c12; stroke-width: 1.5; fill: none; marker-end: url(#orange-arrow); stroke-dasharray: 3,3; }
-    </style>
-    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <marker id="fcArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
     </marker>
-    <marker id="green-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
+    <marker id="fcArrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4CAF50"/>
     </marker>
-    <marker id="orange-arrow" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
-      <polygon points="0 0, 8 2.5, 0 5" fill="#f39c12"/>
+    <marker id="fcArrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E91E63"/>
     </marker>
   </defs>
 
   <!-- Title -->
-  <text x="700" y="30" class="title" text-anchor="middle">Hermes Agent 函数调用关系图</text>
+  <text x="550" y="28" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="18" fill="#0D47A1">Hermes Agent 函数调用流程图 (RDS Agent)</text>
+  <text x="550" y="48" text-anchor="middle" font-family="Arial" font-size="12" fill="#666">Function Calling 自动工具调用循环</text>
 
-  <!-- Entry Point: main() -->
-  <rect x="550" y="60" width="200" height="50" class="entry-func"/>
-  <text x="650" y="85" class="func-name" text-anchor="middle">hermes_cli.main:main()</text>
-  <text x="650" y="105" class="small-text" text-anchor="middle">CLI 入口</text>
+  <!-- ========== Step 1: User Input ========== -->
+  <rect x="420" y="65" width="260" height="50" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" rx="8"/>
+  <rect x="420" y="65" width="260" height="16" fill="#1976D2" rx="8"/>
+  <text x="550" y="77" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">1. 用户输入</text>
+  <text x="550" y="98" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">HermesAgent.chat(message)</text>
 
-  <!-- Gateway Entry -->
-  <rect x="800" y="60" width="180" height="50" class="entry-func"/>
-  <text x="890" y="85" class="func-name" text-anchor="middle">gateway.run:run_gateway()</text>
-  <text x="890" y="105" class="small-text" text-anchor="middle">网关入口</text>
+  <!-- ========== Step 2: Build Messages ========== -->
+  <rect x="380" y="140" width="340" height="55" fill="#fff" stroke="#1976D2" stroke-width="1" rx="5"/>
+  <rect x="380" y="140" width="340" height="16" fill="#2196F3" rx="5"/>
+  <text x="550" y="152" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">2. 构建请求 (HermesAgent._build_messages)</text>
+  <text x="550" y="172" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">system prompt + user message + tools 定义</text>
+  <text x="550" y="186" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">ToolRegistry.get_schemas() → OpenAI function 格式</text>
 
-  <!-- AIAgent.__init__ -->
-  <rect x="550" y="140" width="200" height="45" class="core-func"/>
-  <text x="650" y="162" class="func-name" text-anchor="middle">AIAgent.__init__()</text>
+  <!-- Arrow -->
+  <line x1="550" y1="115" x2="550" y2="140" stroke="#555" stroke-width="2" marker-end="url(#fcArrow)"/>
 
-  <!-- AIAgent.run_conversation - Main Loop -->
-  <rect x="450" y="220" width="300" height="60" class="core-func"/>
-  <text x="600" y="245" class="func-title" text-anchor="middle">run_agent.py</text>
-  <text x="600" y="265" class="func-name" text-anchor="middle">AIAgent.run_conversation()</text>
+  <!-- ========== Step 3: LLM API Call ========== -->
+  <rect x="380" y="220" width="340" height="55" fill="#FCE4EC" stroke="#E91E63" stroke-width="2" rx="5"/>
+  <rect x="380" y="220" width="340" height="16" fill="#E91E63" rx="5"/>
+  <text x="550" y="232" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">3. LLM 调用 (HermesClient.chat_with_functions)</text>
+  <text x="550" y="252" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">POST /api/chat → Ollama (Hermes 3)</text>
+  <text x="550" y="266" text-anchor="middle" font-family="Arial" font-size="9" fill="#C2185B">OpenAI 兼容格式: messages + tools</text>
 
-  <!-- _build_messages -->
-  <rect x="100" y="220" width="180" height="45" class="helper-func"/>
-  <text x="190" y="245" class="func-name" text-anchor="middle">_build_messages()</text>
+  <!-- Arrow -->
+  <line x1="550" y1="195" x2="550" y2="220" stroke="#E91E63" stroke-width="2" marker-end="url(#fcArrowRed)"/>
 
-  <!-- _call_api -->
-  <rect x="800" y="220" width="180" height="45" class="core-func"/>
-  <text x="890" y="245" class="func-name" text-anchor="middle">_call_api()</text>
+  <!-- ========== Decision: Has Tool Calls? ========== -->
+  <polygon points="550,300 680,350 550,400 420,350" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+  <text x="550" y="348" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="11" fill="#333">4. tool_calls?</text>
+  <text x="550" y="365" text-anchor="middle" font-family="Arial" font-size="9" fill="#666">检查响应中的工具调用</text>
 
-  <!-- Arrows from main -->
-  <path d="M 650 110 L 650 140" class="arrow"/>
-  <path d="M 650 185 L 600 220" class="arrow"/>
-  <path d="M 890 110 L 890 220" class="arrow"/>
+  <!-- Arrow -->
+  <line x1="550" y1="275" x2="550" y2="300" stroke="#555" stroke-width="2" marker-end="url(#fcArrow)"/>
 
-  <!-- Tool Execution Branch -->
-  <rect x="450" y="320" width="300" height="50" class="core-func"/>
-  <text x="600" y="342" class="func-name" text-anchor="middle">_process_tool_calls()</text>
+  <!-- ========== YES: Execute Tool Calls ========== -->
+  <!-- Left branch: Yes -->
+  <line x1="420" y1="350" x2="200" y2="350" stroke="#4CAF50" stroke-width="2" marker-end="url(#fcArrowGreen)"/>
+  <text x="310" y="342" font-family="Arial" font-weight="bold" font-size="10" fill="#4CAF50">是</text>
 
-  <!-- handle_function_call -->
-  <rect x="500" y="400" width="200" height="45" class="tool-func"/>
-  <text x="600" y="425" class="func-name" text-anchor="middle">model_tools.handle_function_call()</text>
+  <rect x="50" y="320" width="310" height="65" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2" rx="5"/>
+  <rect x="50" y="320" width="310" height="16" fill="#4CAF50" rx="5"/>
+  <text x="205" y="332" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">5. 执行工具调用</text>
+  <text x="205" y="352" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">ToolRegistry.execute(tool_name, arguments)</text>
+  <text x="205" y="367" text-anchor="middle" font-family="Arial" font-size="9" fill="#4CAF50">遍历 response.tool_calls 逐个执行</text>
 
-  <!-- Tool Registry -->
-  <rect x="200" y="400" width="180" height="45" class="tool-func"/>
-  <text x="290" y="425" class="func-name" text-anchor="middle">registry.dispatch()</text>
+  <!-- Tool Execution Details -->
+  <rect x="50" y="405" width="310" height="145" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1" rx="5"/>
+  <text x="70" y="425" font-family="Arial" font-weight="bold" font-size="10" fill="#7B1FA2">工具执行详情:</text>
 
-  <!-- get_tool_definitions -->
-  <rect x="800" y="400" width="180" height="45" class="tool-func"/>
-  <text x="890" y="425" class="func-name" text-anchor="middle">get_tool_definitions()</text>
+  <rect x="65" y="435" width="130" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="2"/>
+  <text x="130" y="450" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">get_instance_info</text>
+  <text x="130" y="462" text-anchor="middle" font-family="Arial" font-size="7" fill="#666">实例信息</text>
 
-  <!-- Arrows -->
-  <path d="M 600 280 L 600 320" class="arrow"/>
-  <path d="M 600 370 L 600 400" class="arrow"/>
-  <path d="M 600 445 L 290 400" class="async-arrow"/>
-  <path d="M 750 250 L 890 220" class="arrow"/>
-  <path d="M 890 265 L 890 400" class="arrow"/>
-  <path d="M 450 345 L 190 220" class="callback-arrow"/>
+  <rect x="205" y="435" width="140" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="2"/>
+  <text x="275" y="450" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">get_monitoring_data</text>
+  <text x="275" y="462" text-anchor="middle" font-family="Arial" font-size="7" fill="#666">性能监控</text>
 
-  <!-- Specific Tool Handlers -->
-  <rect x="50" y="500" width="140" height="40" class="tool-func"/>
-  <text x="120" y="520" class="func-name" text-anchor="middle">terminal_tool()</text>
+  <rect x="65" y="470" width="130" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="2"/>
+  <text x="130" y="485" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">get_slow_queries</text>
+  <text x="130" y="497" text-anchor="middle" font-family="Arial" font-size="7" fill="#666">慢SQL</text>
 
-  <rect x="200" y="500" width="140" height="40" class="tool-func"/>
-  <text x="270" y="520" class="func-name" text-anchor="middle">browser_tool()</text>
+  <rect x="205" y="470" width="140" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="2"/>
+  <text x="275" y="485" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">analyze_sql_plan</text>
+  <text x="275" y="497" text-anchor="middle" font-family="Arial" font-size="7" fill="#666">执行计划</text>
 
-  <rect x="350" y="500" width="140" height="40" class="tool-func"/>
-  <text x="420" y="520" class="func-name" text-anchor="middle">file_tools()</text>
+  <rect x="65" y="505" width="280" height="30" fill="#fff" stroke="#666" stroke-width="1" rx="2"/>
+  <text x="205" y="520" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">+ check_connection / check_lock / get_storage / search_knowledge / ...</text>
 
-  <rect x="500" y="500" width="140" height="40" class="tool-func"/>
-  <text x="570" y="520" class="func-name" text-anchor="middle">delegate_tool()</text>
+  <!-- Arrow from tool execution down -->
+  <line x1="205" y1="385" x2="205" y2="405" stroke="#4CAF50" stroke-width="2" marker-end="url(#fcArrowGreen)"/>
 
-  <rect x="650" y="500" width="140" height="40" class="tool-func"/>
-  <text x="720" y="520" class="func-name" text-anchor="middle">skills_tool()</text>
+  <!-- Step 6: Append tool results -->
+  <rect x="50" y="570" width="310" height="55" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" rx="5"/>
+  <rect x="50" y="570" width="310" height="16" fill="#1976D2" rx="5"/>
+  <text x="205" y="582" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">6. 追加工具结果到 messages</text>
+  <text x="205" y="602" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">tool_result → messages.append()</text>
+  <text x="205" y="617" text-anchor="middle" font-family="Arial" font-size="9" fill="#1976D2">循环回到步骤3 (max_iterations)</text>
 
-  <rect x="800" y="500" width="140" height="40" class="tool-func"/>
-  <text x="870" y="520" class="func-name" text-anchor="middle">web_tools()</text>
+  <!-- Arrow down -->
+  <line x1="205" y1="550" x2="205" y2="570" stroke="#1976D2" stroke-width="2" marker-end="url(#fcArrow)"/>
 
-  <rect x="950" y="500" width="140" height="40" class="tool-func"/>
-  <text x="1020" y="520" class="func-name" text-anchor="middle">mcp_tool()</text>
+  <!-- Loop back arrow -->
+  <path d="M 50 595 L 20 595 L 20 250 L 380 250" fill="none" stroke="#9C27B0" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#fcArrow)"/>
+  <text x="15" y="420" font-family="Arial" font-size="9" fill="#9C27B0" transform="rotate(-90, 15, 420)">循环调用</text>
 
-  <rect x="1100" y="500" width="140" height="40" class="tool-func"/>
-  <text x="1170" y="520" class="func-name" text-anchor="middle">memory_tool()</text>
+  <!-- ========== NO: Final Response ========== -->
+  <!-- Right branch: No -->
+  <line x1="680" y1="350" x2="740" y2="350" stroke="#2196F3" stroke-width="2" marker-end="url(#fcArrow)"/>
+  <text x="710" y="342" font-family="Arial" font-weight="bold" font-size="10" fill="#2196F3">否</text>
 
-  <!-- Arrows to specific tools -->
-  <path d="M 290 445 L 120 500" class="async-arrow"/>
-  <path d="M 290 445 L 270 500" class="async-arrow"/>
-  <path d="M 290 445 L 420 500" class="async-arrow"/>
-  <path d="M 600 445 L 570 500" class="async-arrow"/>
-  <path d="M 600 445 L 720 500" class="async-arrow"/>
-  <path d="M 600 445 L 870 500" class="async-arrow"/>
-  <path d="M 600 445 L 1020 500" class="async-arrow"/>
-  <path d="M 600 445 L 1170 500" class="async-arrow"/>
+  <rect x="740" y="320" width="310" height="65" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2" rx="5"/>
+  <rect x="740" y="320" width="310" height="16" fill="#4CAF50" rx="5"/>
+  <text x="895" y="332" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">7. 知识库搜索 (可选)</text>
+  <text x="895" y="352" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">search_knowledge_base(query)</text>
+  <text x="895" y="367" text-anchor="middle" font-family="Arial" font-size="9" fill="#4CAF50">ChromaDB 向量检索 → 补充回答</text>
 
-  <!-- Agent Auxiliary Functions -->
-  <rect x="50" y="600" width="180" height="45" class="helper-func"/>
-  <text x="140" y="622" class="func-name" text-anchor="middle">prompt_builder.build_*()</text>
+  <!-- Step 8: Format Response -->
+  <rect x="740" y="410" width="310" height="65" fill="#FFF3E0" stroke="#FF9800" stroke-width="2" rx="5"/>
+  <rect x="740" y="410" width="310" height="16" fill="#FF9800" rx="5"/>
+  <text x="895" y="422" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">8. 格式化响应</text>
+  <text x="895" y="442" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">LLM 最终回答 + 知识库参考</text>
+  <text x="895" y="457" text-anchor="middle" font-family="Arial" font-size="9" fill="#FF9800">结构化输出 (根因/建议/数据)</text>
 
-  <rect x="250" y="600" width="180" height="45" class="helper-func"/>
-  <text x="340" y="622" class="func-name" text-anchor="middle">memory_manager.build_memory()</text>
+  <line x1="895" y1="385" x2="895" y2="410" stroke="#555" stroke-width="2" marker-end="url(#fcArrow)"/>
 
-  <rect x="450" y="600" width="180" height="45" class="helper-func"/>
-  <text x="540" y="622" class="func-name" text-anchor="middle">context_compressor.compress()</text>
+  <!-- Step 9: Return -->
+  <rect x="740" y="505" width="310" height="55" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" rx="5"/>
+  <rect x="740" y="505" width="310" height="16" fill="#1976D2" rx="5"/>
+  <text x="895" y="517" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="10" fill="#fff">9. 返回结果</text>
+  <text x="895" y="537" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">response: 响应文本</text>
+  <text x="895" y="552" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">agent_type: "hermes"</text>
 
-  <rect x="650" y="600" width="180" height="45" class="helper-func"/>
-  <text x="740" y="622" class="func-name" text-anchor="middle">error_classifier.classify()</text>
+  <line x1="895" y1="475" x2="895" y2="505" stroke="#555" stroke-width="2" marker-end="url(#fcArrow)"/>
 
-  <rect x="850" y="600" width="180" height="45" class="helper-func"/>
-  <text x="940" y="622" class="func-name" text-anchor="middle">model_metadata.fetch()</text>
+  <!-- ========== Example Flow ========== -->
+  <rect x="50" y="640" width="1000" height="90" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="5"/>
+  <text x="70" y="660" font-family="Arial" font-weight="bold" font-size="12" fill="#333">示例调用流程: "什么是 Buffer Pool？"</text>
 
-  <rect x="1050" y="600" width="180" height="45" class="helper-func"/>
-  <text x="1140" y="622" class="func-name" text-anchor="middle">usage_pricing.estimate()</text>
+  <rect x="70" y="675" width="130" height="40" fill="#E3F2FD" stroke="#1976D2" stroke-width="1" rx="3"/>
+  <text x="135" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">用户: 什么是</text>
+  <text x="135" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Buffer Pool?</text>
 
-  <!-- Arrows to auxiliary -->
-  <path d="M 190 265 L 140 600" class="callback-arrow"/>
-  <path d="M 190 265 L 340 600" class="callback-arrow"/>
-  <path d="M 600 280 L 540 600" class="callback-arrow"/>
-  <path d="M 890 265 L 940 600" class="callback-arrow"/>
-  <path d="M 890 265 L 1140 600" class="callback-arrow"/>
+  <rect x="215" y="675" width="130" height="40" fill="#FCE4EC" stroke="#E91E63" stroke-width="1" rx="3"/>
+  <text x="280" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Router: SIMPLE_QA</text>
+  <text x="280" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#C2185B">→ HermesAgent</text>
 
-  <!-- Gateway Session Functions -->
-  <rect x="1050" y="220" width="180" height="45" class="callback-func"/>
-  <text x="1140" y="245" class="func-name" text-anchor="middle">session.handle_message()</text>
+  <rect x="360" y="675" width="130" height="40" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="3"/>
+  <text x="425" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Hermes: 调用</text>
+  <text x="425" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#4CAF50">search_knowledge</text>
 
-  <rect x="1050" y="320" width="180" height="45" class="callback-func"/>
-  <text x="1140" y="342" class="func-name" text-anchor="middle">stream_consumer.process()</text>
+  <rect x="505" y="675" width="130" height="40" fill="#fff" stroke="#9C27B0" stroke-width="1" rx="3"/>
+  <text x="570" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">获取: 架构/性能</text>
+  <text x="570" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#9C27B0">知识库内容</text>
 
-  <rect x="1050" y="400" width="180" height="45" class="callback-func"/>
-  <text x="1140" y="425" class="func-name" text-anchor="middle">platforms.telegram.send()</text>
+  <rect x="650" y="675" width="130" height="40" fill="#fff" stroke="#FF9800" stroke-width="1" rx="3"/>
+  <text x="715" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">LLM: 生成</text>
+  <text x="715" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#FF9800">结构化回答</text>
 
-  <!-- Gateway arrows -->
-  <path d="M 890 110 L 1140 220" class="arrow"/>
-  <path d="M 1140 265 L 1140 320" class="arrow"/>
-  <path d="M 1140 365 L 1140 400" class="arrow"/>
+  <rect x="795" y="675" width="130" height="40" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1" rx="3"/>
+  <text x="860" y="692" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">返回: Buffer Pool</text>
+  <text x="860" y="705" text-anchor="middle" font-family="Arial" font-size="8" fill="#4CAF50">详细解释</text>
 
-  <!-- API Adapter Layer -->
-  <rect x="800" y="320" width="180" height="50" class="core-func"/>
-  <text x="890" y="342" class="func-name" text-anchor="middle">API Adapter Layer</text>
-  <text x="890" y="365" class="small-text" text-anchor="middle">OpenAI/Anthropic/Bedrock</text>
+  <!-- Example flow arrows -->
+  <line x1="200" y1="695" x2="215" y2="695" stroke="#1976D2" stroke-width="1" marker-end="url(#fcArrow)"/>
+  <line x1="345" y1="695" x2="360" y2="695" stroke="#E91E63" stroke-width="1" marker-end="url(#fcArrow)"/>
+  <line x1="490" y1="695" x2="505" y2="695" stroke="#4CAF50" stroke-width="1" marker-end="url(#fcArrow)"/>
+  <line x1="635" y1="695" x2="650" y2="695" stroke="#9C27B0" stroke-width="1" marker-end="url(#fcArrow)"/>
+  <line x1="780" y1="695" x2="795" y2="695" stroke="#FF9800" stroke-width="1" marker-end="url(#fcArrow)"/>
 
-  <rect x="800" y="180" width="180" height="35" class="core-func"/>
-  <text x="890" y="202" class="func-name" text-anchor="middle">anthropic_adapter.py</text>
+  <!-- ========== Configuration ========== -->
+  <rect x="50" y="750" width="1000" height="50" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1" rx="5"/>
+  <text x="70" y="770" font-family="Arial" font-weight="bold" font-size="11" fill="#2E7D32">关键参数:</text>
 
-  <rect x="1000" y="180" width="180" height="35" class="core-func"/>
-  <text x="1090" y="202" class="func-name" text-anchor="middle">auxiliary_client.py</text>
+  <rect x="170" y="758" width="130" height="20" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="2"/>
+  <text x="235" y="772" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">max_iterations=10</text>
 
-  <!-- API adapter arrows -->
-  <path d="M 890 265 L 890 320" class="arrow"/>
-  <path d="M 890 370 L 890 400" class="arrow"/>
-  <path d="M 890 215 L 890 220" class="arrow"/>
-  <path d="M 1090 215 L 890 220" class="arrow"/>
+  <rect x="310" y="758" width="110" height="20" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="2"/>
+  <text x="365" y="772" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">timeout=60.0s</text>
 
-  <!-- Callbacks Section -->
-  <rect x="50" y="700" width="1300" height="80" fill="#ecf0f1" stroke="#bdc3c7" rx="8"/>
-  <text x="700" y="725" class="func-title" text-anchor="middle">回调函数 (Callbacks)</text>
-  <text x="200" y="750" class="small-text" text-anchor="middle">tool_progress_callback</text>
-  <text x="400" y="750" class="small-text" text-anchor="middle">thinking_callback</text>
-  <text x="600" y="750" class="small-text" text-anchor="middle">stream_delta_callback</text>
-  <text x="800" y="750" class="small-text" text-anchor="middle">clarify_callback</text>
-  <text x="1000" y="750" class="small-text" text-anchor="middle">status_callback</text>
-  <text x="1200" y="750" class="small-text" text-anchor="middle">step_callback</text>
+  <rect x="430" y="758" width="140" height="20" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="2"/>
+  <text x="500" y="772" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">model=hermes3 (Ollama)</text>
 
-  <!-- Callback arrows -->
-  <path d="M 600 370 L 200 700" class="callback-arrow"/>
-  <path d="M 600 370 L 600 700" class="callback-arrow"/>
-  <path d="M 890 265 L 800 700" class="callback-arrow"/>
+  <rect x="580" y="758" width="160" height="20" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="2"/>
+  <text x="660" y="772" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">format=openai-function-calling</text>
 
-  <!-- Legend -->
-  <rect x="50" y="800" width="15" height="15" class="entry-func"/>
-  <text x="75" y="812" class="small-text">入口函数</text>
-  <rect x="150" y="800" width="15" height="15" class="core-func"/>
-  <text x="175" y="812" class="small-text">核心函数</text>
-  <rect x="250" y="800" width="15" height="15" class="tool-func"/>
-  <text x="275" y="812" class="small-text">工具函数</text>
-  <rect x="350" y="800" width="15" height="15" class="helper-func"/>
-  <text x="375" y="812" class="small-text">辅助函数</text>
-  <rect x="450" y="800" width="15" height="15" class="callback-func"/>
-  <text x="475" y="812" class="small-text">回调/网关</text>
+  <rect x="750" y="758" width="130" height="20" fill="#fff" stroke="#4CAF50" stroke-width="1" rx="2"/>
+  <text x="815" y="772" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">8 RDS tools registered</text>
 
-  <line x1="550" y1="808" x2="600" y2="808" class="arrow"/>
-  <text x="615" y="812" class="small-text">同步调用</text>
-  <line x1="700" y1="808" x2="750" y2="808" class="async-arrow"/>
-  <text x="765" y="812" class="small-text">异步执行</text>
-  <line x1="850" y1="808" x2="900" y2="808" class="callback-arrow"/>
-  <text x="915" y="812" class="small-text">回调</text>
-
-  <!-- Key Call Flow Description -->
-  <rect x="50" y="860" width="1300" height="100" fill="#f8f9fa" stroke="#dee2e6" rx="8"/>
-  <text x="700" y="885" class="func-title" text-anchor="middle">核心调用流程</text>
-  <text x="100" y="910" class="small-text">1. main() → 初始化配置和 AIAgent</text>
-  <text x="100" y="935" class="small-text">2. run_conversation() → 进入对话循环</text>
-  <text x="500" y="910" class="small-text">3. _build_messages() → 构建消息 + 调用辅助模块</text>
-  <text x="500" y="935" class="small-text">4. _call_api() → 调用 LLM API</text>
-  <text x="900" y="910" class="small-text">5. _process_tool_calls() → 处理工具调用</text>
-  <text x="900" y="935" class="small-text">6. registry.dispatch() → 执行具体工具 → 返回结果</text>
+  <!-- ========== Legend ========== -->
+  <rect x="50" y="810" width="1000" height="30" fill="#fafafa" stroke="#ddd" stroke-width="1" rx="3"/>
+  <rect x="70" y="817" width="12" height="12" fill="#1976D2" rx="2"/>
+  <text x="85" y="827" font-family="Arial" font-size="9" fill="#333">构建/返回</text>
+  <rect x="160" y="817" width="12" height="12" fill="#E91E63" rx="2"/>
+  <text x="175" y="827" font-family="Arial" font-size="9" fill="#333">LLM调用</text>
+  <rect x="240" y="817" width="12" height="12" fill="#4CAF50" rx="2"/>
+  <text x="255" y="827" font-family="Arial" font-size="9" fill="#333">工具执行</text>
+  <rect x="320" y="817" width="12" height="12" fill="#FF9800" rx="2"/>
+  <text x="335" y="827" font-family="Arial" font-size="9" fill="#333">决策点</text>
+  <rect x="400" y="817" width="12" height="12" fill="#9C27B0" rx="2"/>
+  <text x="415" y="827" font-family="Arial" font-size="9" fill="#333">循环</text>
+  <text x="980" y="827" text-anchor="end" font-family="Arial" font-size="9" fill="#666">RDS Agent Hermes Function Calling Flow v0.2.0</text>
 </svg>

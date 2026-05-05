@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000">
+  <defs>
+    <style>
+      .title { font: bold 22px sans-serif; fill: #2c3e50; }
+      .func-title { font: bold 14px sans-serif; fill: #2c3e50; }
+      .func-name { font: 12px monospace; fill: #34495e; }
+      .small-text { font: 11px sans-serif; fill: #666; }
+      .entry-func { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; rx: 6; }
+      .core-func { fill: #3498db; stroke: #2980b9; stroke-width: 2; rx: 6; }
+      .tool-func { fill: #27ae60; stroke: #1e8449; stroke-width: 2; rx: 6; }
+      .helper-func { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; rx: 6; }
+      .callback-func { fill: #f39c12; stroke: #d68910; stroke-width: 2; rx: 6; }
+      .arrow { stroke: #555; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .async-arrow { stroke: #27ae60; stroke-width: 2; fill: none; marker-end: url(#green-arrow); stroke-dasharray: 4,2; }
+      .callback-arrow { stroke: #f39c12; stroke-width: 1.5; fill: none; marker-end: url(#orange-arrow); stroke-dasharray: 3,3; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+    <marker id="green-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
+    </marker>
+    <marker id="orange-arrow" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 8 2.5, 0 5" fill="#f39c12"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="30" class="title" text-anchor="middle">Hermes Agent 函数调用关系图</text>
+
+  <!-- Entry Point: main() -->
+  <rect x="550" y="60" width="200" height="50" class="entry-func"/>
+  <text x="650" y="85" class="func-name" text-anchor="middle">hermes_cli.main:main()</text>
+  <text x="650" y="105" class="small-text" text-anchor="middle">CLI 入口</text>
+
+  <!-- Gateway Entry -->
+  <rect x="800" y="60" width="180" height="50" class="entry-func"/>
+  <text x="890" y="85" class="func-name" text-anchor="middle">gateway.run:run_gateway()</text>
+  <text x="890" y="105" class="small-text" text-anchor="middle">网关入口</text>
+
+  <!-- AIAgent.__init__ -->
+  <rect x="550" y="140" width="200" height="45" class="core-func"/>
+  <text x="650" y="162" class="func-name" text-anchor="middle">AIAgent.__init__()</text>
+
+  <!-- AIAgent.run_conversation - Main Loop -->
+  <rect x="450" y="220" width="300" height="60" class="core-func"/>
+  <text x="600" y="245" class="func-title" text-anchor="middle">run_agent.py</text>
+  <text x="600" y="265" class="func-name" text-anchor="middle">AIAgent.run_conversation()</text>
+
+  <!-- _build_messages -->
+  <rect x="100" y="220" width="180" height="45" class="helper-func"/>
+  <text x="190" y="245" class="func-name" text-anchor="middle">_build_messages()</text>
+
+  <!-- _call_api -->
+  <rect x="800" y="220" width="180" height="45" class="core-func"/>
+  <text x="890" y="245" class="func-name" text-anchor="middle">_call_api()</text>
+
+  <!-- Arrows from main -->
+  <path d="M 650 110 L 650 140" class="arrow"/>
+  <path d="M 650 185 L 600 220" class="arrow"/>
+  <path d="M 890 110 L 890 220" class="arrow"/>
+
+  <!-- Tool Execution Branch -->
+  <rect x="450" y="320" width="300" height="50" class="core-func"/>
+  <text x="600" y="342" class="func-name" text-anchor="middle">_process_tool_calls()</text>
+
+  <!-- handle_function_call -->
+  <rect x="500" y="400" width="200" height="45" class="tool-func"/>
+  <text x="600" y="425" class="func-name" text-anchor="middle">model_tools.handle_function_call()</text>
+
+  <!-- Tool Registry -->
+  <rect x="200" y="400" width="180" height="45" class="tool-func"/>
+  <text x="290" y="425" class="func-name" text-anchor="middle">registry.dispatch()</text>
+
+  <!-- get_tool_definitions -->
+  <rect x="800" y="400" width="180" height="45" class="tool-func"/>
+  <text x="890" y="425" class="func-name" text-anchor="middle">get_tool_definitions()</text>
+
+  <!-- Arrows -->
+  <path d="M 600 280 L 600 320" class="arrow"/>
+  <path d="M 600 370 L 600 400" class="arrow"/>
+  <path d="M 600 445 L 290 400" class="async-arrow"/>
+  <path d="M 750 250 L 890 220" class="arrow"/>
+  <path d="M 890 265 L 890 400" class="arrow"/>
+  <path d="M 450 345 L 190 220" class="callback-arrow"/>
+
+  <!-- Specific Tool Handlers -->
+  <rect x="50" y="500" width="140" height="40" class="tool-func"/>
+  <text x="120" y="520" class="func-name" text-anchor="middle">terminal_tool()</text>
+
+  <rect x="200" y="500" width="140" height="40" class="tool-func"/>
+  <text x="270" y="520" class="func-name" text-anchor="middle">browser_tool()</text>
+
+  <rect x="350" y="500" width="140" height="40" class="tool-func"/>
+  <text x="420" y="520" class="func-name" text-anchor="middle">file_tools()</text>
+
+  <rect x="500" y="500" width="140" height="40" class="tool-func"/>
+  <text x="570" y="520" class="func-name" text-anchor="middle">delegate_tool()</text>
+
+  <rect x="650" y="500" width="140" height="40" class="tool-func"/>
+  <text x="720" y="520" class="func-name" text-anchor="middle">skills_tool()</text>
+
+  <rect x="800" y="500" width="140" height="40" class="tool-func"/>
+  <text x="870" y="520" class="func-name" text-anchor="middle">web_tools()</text>
+
+  <rect x="950" y="500" width="140" height="40" class="tool-func"/>
+  <text x="1020" y="520" class="func-name" text-anchor="middle">mcp_tool()</text>
+
+  <rect x="1100" y="500" width="140" height="40" class="tool-func"/>
+  <text x="1170" y="520" class="func-name" text-anchor="middle">memory_tool()</text>
+
+  <!-- Arrows to specific tools -->
+  <path d="M 290 445 L 120 500" class="async-arrow"/>
+  <path d="M 290 445 L 270 500" class="async-arrow"/>
+  <path d="M 290 445 L 420 500" class="async-arrow"/>
+  <path d="M 600 445 L 570 500" class="async-arrow"/>
+  <path d="M 600 445 L 720 500" class="async-arrow"/>
+  <path d="M 600 445 L 870 500" class="async-arrow"/>
+  <path d="M 600 445 L 1020 500" class="async-arrow"/>
+  <path d="M 600 445 L 1170 500" class="async-arrow"/>
+
+  <!-- Agent Auxiliary Functions -->
+  <rect x="50" y="600" width="180" height="45" class="helper-func"/>
+  <text x="140" y="622" class="func-name" text-anchor="middle">prompt_builder.build_*()</text>
+
+  <rect x="250" y="600" width="180" height="45" class="helper-func"/>
+  <text x="340" y="622" class="func-name" text-anchor="middle">memory_manager.build_memory()</text>
+
+  <rect x="450" y="600" width="180" height="45" class="helper-func"/>
+  <text x="540" y="622" class="func-name" text-anchor="middle">context_compressor.compress()</text>
+
+  <rect x="650" y="600" width="180" height="45" class="helper-func"/>
+  <text x="740" y="622" class="func-name" text-anchor="middle">error_classifier.classify()</text>
+
+  <rect x="850" y="600" width="180" height="45" class="helper-func"/>
+  <text x="940" y="622" class="func-name" text-anchor="middle">model_metadata.fetch()</text>
+
+  <rect x="1050" y="600" width="180" height="45" class="helper-func"/>
+  <text x="1140" y="622" class="func-name" text-anchor="middle">usage_pricing.estimate()</text>
+
+  <!-- Arrows to auxiliary -->
+  <path d="M 190 265 L 140 600" class="callback-arrow"/>
+  <path d="M 190 265 L 340 600" class="callback-arrow"/>
+  <path d="M 600 280 L 540 600" class="callback-arrow"/>
+  <path d="M 890 265 L 940 600" class="callback-arrow"/>
+  <path d="M 890 265 L 1140 600" class="callback-arrow"/>
+
+  <!-- Gateway Session Functions -->
+  <rect x="1050" y="220" width="180" height="45" class="callback-func"/>
+  <text x="1140" y="245" class="func-name" text-anchor="middle">session.handle_message()</text>
+
+  <rect x="1050" y="320" width="180" height="45" class="callback-func"/>
+  <text x="1140" y="342" class="func-name" text-anchor="middle">stream_consumer.process()</text>
+
+  <rect x="1050" y="400" width="180" height="45" class="callback-func"/>
+  <text x="1140" y="425" class="func-name" text-anchor="middle">platforms.telegram.send()</text>
+
+  <!-- Gateway arrows -->
+  <path d="M 890 110 L 1140 220" class="arrow"/>
+  <path d="M 1140 265 L 1140 320" class="arrow"/>
+  <path d="M 1140 365 L 1140 400" class="arrow"/>
+
+  <!-- API Adapter Layer -->
+  <rect x="800" y="320" width="180" height="50" class="core-func"/>
+  <text x="890" y="342" class="func-name" text-anchor="middle">API Adapter Layer</text>
+  <text x="890" y="365" class="small-text" text-anchor="middle">OpenAI/Anthropic/Bedrock</text>
+
+  <rect x="800" y="180" width="180" height="35" class="core-func"/>
+  <text x="890" y="202" class="func-name" text-anchor="middle">anthropic_adapter.py</text>
+
+  <rect x="1000" y="180" width="180" height="35" class="core-func"/>
+  <text x="1090" y="202" class="func-name" text-anchor="middle">auxiliary_client.py</text>
+
+  <!-- API adapter arrows -->
+  <path d="M 890 265 L 890 320" class="arrow"/>
+  <path d="M 890 370 L 890 400" class="arrow"/>
+  <path d="M 890 215 L 890 220" class="arrow"/>
+  <path d="M 1090 215 L 890 220" class="arrow"/>
+
+  <!-- Callbacks Section -->
+  <rect x="50" y="700" width="1300" height="80" fill="#ecf0f1" stroke="#bdc3c7" rx="8"/>
+  <text x="700" y="725" class="func-title" text-anchor="middle">回调函数 (Callbacks)</text>
+  <text x="200" y="750" class="small-text" text-anchor="middle">tool_progress_callback</text>
+  <text x="400" y="750" class="small-text" text-anchor="middle">thinking_callback</text>
+  <text x="600" y="750" class="small-text" text-anchor="middle">stream_delta_callback</text>
+  <text x="800" y="750" class="small-text" text-anchor="middle">clarify_callback</text>
+  <text x="1000" y="750" class="small-text" text-anchor="middle">status_callback</text>
+  <text x="1200" y="750" class="small-text" text-anchor="middle">step_callback</text>
+
+  <!-- Callback arrows -->
+  <path d="M 600 370 L 200 700" class="callback-arrow"/>
+  <path d="M 600 370 L 600 700" class="callback-arrow"/>
+  <path d="M 890 265 L 800 700" class="callback-arrow"/>
+
+  <!-- Legend -->
+  <rect x="50" y="800" width="15" height="15" class="entry-func"/>
+  <text x="75" y="812" class="small-text">入口函数</text>
+  <rect x="150" y="800" width="15" height="15" class="core-func"/>
+  <text x="175" y="812" class="small-text">核心函数</text>
+  <rect x="250" y="800" width="15" height="15" class="tool-func"/>
+  <text x="275" y="812" class="small-text">工具函数</text>
+  <rect x="350" y="800" width="15" height="15" class="helper-func"/>
+  <text x="375" y="812" class="small-text">辅助函数</text>
+  <rect x="450" y="800" width="15" height="15" class="callback-func"/>
+  <text x="475" y="812" class="small-text">回调/网关</text>
+
+  <line x1="550" y1="808" x2="600" y2="808" class="arrow"/>
+  <text x="615" y="812" class="small-text">同步调用</text>
+  <line x1="700" y1="808" x2="750" y2="808" class="async-arrow"/>
+  <text x="765" y="812" class="small-text">异步执行</text>
+  <line x1="850" y1="808" x2="900" y2="808" class="callback-arrow"/>
+  <text x="915" y="812" class="small-text">回调</text>
+
+  <!-- Key Call Flow Description -->
+  <rect x="50" y="860" width="1300" height="100" fill="#f8f9fa" stroke="#dee2e6" rx="8"/>
+  <text x="700" y="885" class="func-title" text-anchor="middle">核心调用流程</text>
+  <text x="100" y="910" class="small-text">1. main() → 初始化配置和 AIAgent</text>
+  <text x="100" y="935" class="small-text">2. run_conversation() → 进入对话循环</text>
+  <text x="500" y="910" class="small-text">3. _build_messages() → 构建消息 + 调用辅助模块</text>
+  <text x="500" y="935" class="small-text">4. _call_api() → 调用 LLM API</text>
+  <text x="900" y="910" class="small-text">5. _process_tool_calls() → 处理工具调用</text>
+  <text x="900" y="935" class="small-text">6. registry.dispatch() → 执行具体工具 → 返回结果</text>
+</svg>
